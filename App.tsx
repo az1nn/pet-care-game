@@ -14,7 +14,7 @@ import { WardrobeScene } from './src/screens/WardrobeScene';
 
 const Stack = createNativeStackNavigator();
 
-const AppNavigator:  React.FC = () => {
+const AppNavigator: React.FC = () => {
   const { isLoading } = usePet();
 
   if (isLoading) {
