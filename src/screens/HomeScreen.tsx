@@ -1,10 +1,11 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { StatusBar } from '../components/StatusBar';
 import { IconButton } from '../components/IconButton';
+import { ConfirmModal } from '../components/ConfirmModal';
 import { calculatePetAge } from '../utils/age';
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
 
 export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { pet } = usePet();
+  const [showMenuConfirm, setShowMenuConfirm] = useState(false);
 
   if (!pet) {
     return null;
@@ -33,20 +35,12 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleMenuPress = () => {
-    Alert.alert(
-      'Voltar ao Menu',
-      'Tem certeza que quer sair? O status atual do seu pet será salvo.',
-      [
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-        {
-          text: 'Confirmar',
-          onPress: () => navigation.goBack(),
-        },
-      ]
-    );
+    setShowMenuConfirm(true);
+  };
+
+  const handleConfirmMenu = () => {
+    setShowMenuConfirm(false);
+    navigation.goBack();
   };
 
   return (
@@ -101,6 +95,16 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
           onPress={handleMenuPress}
         />
       </View>
+
+      <ConfirmModal
+        visible={showMenuConfirm}
+        title="Voltar ao Menu"
+        message="Tem certeza que quer sair? O status atual do seu pet será salvo."
+        confirmText="Confirmar"
+        cancelText="Cancelar"
+        onConfirm={handleConfirmMenu}
+        onCancel={() => setShowMenuConfirm(false)}
+      />
     </SafeAreaView>
   );
 };
