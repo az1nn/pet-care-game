@@ -11,7 +11,7 @@ export const calculatePetAge = (createdAt: number): number => {
   const now = Date.now();
   
   // Validação: se createdAt for inválido ou no futuro, retorna idade inicial
-  if (!createdAt || createdAt < 0 || createdAt > now) {
+  if (createdAt == null || createdAt < 0 || createdAt > now) {
     return 1;
   }
   
