@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 
 import { PetProvider, usePet } from './src/context/PetContext';
+import { MenuScreen } from './src/screens/MenuScreen';
 import { CreatePetScreen } from './src/screens/CreatePetScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { FeedScene } from './src/screens/FeedScene';
@@ -13,8 +14,8 @@ import { WardrobeScene } from './src/screens/WardrobeScene';
 
 const Stack = createNativeStackNavigator();
 
-const AppNavigator:  React.FC = () => {
-  const { pet, isLoading } = usePet();
+const AppNavigator: React.FC = () => {
+  const { isLoading } = usePet();
 
   if (isLoading) {
     return (
@@ -26,21 +27,18 @@ const AppNavigator:  React.FC = () => {
 
   return (
     <Stack.Navigator
+      initialRouteName="Menu"
       screenOptions={{
         headerShown: false,
         animation: 'slide_from_right',
       }}
     >
-      {pet ? (
-        <>
-          <Stack. Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Feed" component={FeedScene} />
-          <Stack.Screen name="Bath" component={BathScene} />
-          <Stack.Screen name="Wardrobe" component={WardrobeScene} />
-        </>
-      ) : (
-        <Stack.Screen name="CreatePet" component={CreatePetScreen} />
-      )}
+      <Stack.Screen name="Menu" component={MenuScreen} />
+      <Stack.Screen name="CreatePet" component={CreatePetScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Feed" component={FeedScene} />
+      <Stack.Screen name="Bath" component={BathScene} />
+      <Stack.Screen name="Wardrobe" component={WardrobeScene} />
     </Stack.Navigator>
   );
 };
