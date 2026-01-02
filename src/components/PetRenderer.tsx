@@ -8,11 +8,11 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { Pet, AnimationState } from '../types';
+import { Pet, AnimationState, PetType, PetColor } from '../types';
 import { CLOTHING_ITEMS } from '../data/clothingItems';
 
 // Mapeamento de assets base por tipo e cor
-const BASE_ASSETS = {
+const BASE_ASSETS: Record<PetType, Record<PetColor, number>> = {
   cat: {
     base: require('../../assets/sprites/cats/cat_base.png'),
     black: require('../../assets/sprites/cats/cat_black.png'),
