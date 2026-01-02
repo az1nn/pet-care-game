@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
-import { PetType, Gender } from '../types';
+import { PetType, Gender, PetColor } from '../types';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -22,10 +22,11 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
   const [name, setName] = useState('');
   const [petType, setPetType] = useState<PetType>('cat');
   const [gender, setGender] = useState<Gender>('other');
+  const [color, setColor] = useState<PetColor>('base');
 
   const handleCreate = async () => {
     if (!name.trim()) return;
-    await createPet(name.trim(), petType, gender);
+    await createPet(name.trim(), petType, gender, color);
     navigation.replace('Home');
   };
 
@@ -70,6 +71,24 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
           placeholderTextColor="#999"
           maxLength={20}
         />
+
+        <Text style={styles.label}>Cor do pet:</Text>
+        <View style={styles.optionRow}>
+          <TouchableOpacity
+            style={[styles.colorButton, color === 'base' && styles.optionSelected]}
+            onPress={() => setColor('base')}
+          >
+            <View style={[styles.colorCircle, styles.colorBase]} />
+            <Text style={styles.colorText}>Claro</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.colorButton, color === 'black' && styles.optionSelected]}
+            onPress={() => setColor('black')}
+          >
+            <View style={[styles.colorCircle, styles.colorBlack]} />
+            <Text style={styles.colorText}>Preto</Text>
+          </TouchableOpacity>
+        </View>
 
         <Text style={styles.label}>Gênero:</Text>
         <View style={styles.optionRow}>
@@ -186,6 +205,35 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
     marginTop: 4,
+  },
+  colorButton: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 4,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  colorCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: '#ddd',
+    marginBottom: 8,
+  },
+  colorBase: {
+    backgroundColor: '#f5f5dc',
+  },
+  colorBlack: {
+    backgroundColor: '#2c2c2c',
+  },
+  colorText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
   },
   input: {
     backgroundColor: '#fff',

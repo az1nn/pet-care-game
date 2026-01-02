@@ -5,6 +5,7 @@ Um jogo 2D infantil para Android usando React Native, onde crianças podem cuida
 ## ✨ Funcionalidades
 - 🐱🐶 Criar pets (gato ou cachorro)
 - 📝 Escolher nome e gênero do pet
+- 🎨 Escolher cor do pet (Claro ou Preto)
 - 🎂 Sistema de idade (1 ano inicial, +1 por semana, máximo 19 anos)
 - 🍖 Alimentar o pet
 - 🛁 Dar banho no pet
@@ -33,7 +34,8 @@ npx expo start
 
 ## 🎨 Assets necessários
 Coloque os PNGs em `assets/sprites/`:
-- `cats/cat_base.png`
+- `cats/cat_base.png` (cor clara)
+- `cats/cat_black.png` (cor preta)
 - `dogs/dog_base.png`
 - `clothes/hat_red.png`
 - `clothes/eyes_big.png`
