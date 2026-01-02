@@ -93,7 +93,7 @@ export const MenuScreen: React.FC<Props> = ({ navigation }) => {
             <ConfirmModal
                 visible={showNewPetConfirm}
                 title="Criar Novo Pet"
-                message={`Você tem certeza? Seu pet "${pet?.name}" será removido permanentemente.`}
+                message={pet ? `Você tem certeza? Seu pet "${pet.name}" será removido permanentemente.` : ''}
                 confirmText="Confirmar"
                 cancelText="Cancelar"
                 confirmStyle="destructive"
@@ -104,7 +104,7 @@ export const MenuScreen: React.FC<Props> = ({ navigation }) => {
             <ConfirmModal
                 visible={showDeletePetConfirm}
                 title="Apagar Pet"
-                message={`Você tem certeza que deseja apagar o pet "${pet?.name}"? Esta ação não pode ser desfeita.`}
+                message={pet ? `Você tem certeza que deseja apagar o pet "${pet.name}"? Esta ação não pode ser desfeita.` : ''}
                 confirmText="Apagar"
                 cancelText="Cancelar"
                 confirmStyle="destructive"
