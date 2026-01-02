@@ -19,7 +19,7 @@ const BASE_ASSETS = {
   },
   dog: {
     base: require('../../assets/sprites/dogs/dog_base.png'),
-    black: require('../../assets/sprites/dogs/dog_base.png'), // Using same for now as per requirements
+    black: require('../../assets/sprites/dogs/dog_base.png'), // Per requirements: use same image for dog until dog_black.png is added
   },
 };
 
