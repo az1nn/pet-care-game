@@ -10,9 +10,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Pet, AnimationState, PetType, PetColor } from '../types';
 import { CLOTHING_ITEMS } from '../data/clothingItems';
+import { ImageRequireSource } from 'react-native';
 
 // Mapeamento de assets base por tipo e cor
-const BASE_ASSETS: Record<PetType, Record<PetColor, number>> = {
+const BASE_ASSETS: Record<PetType, Record<PetColor, ImageRequireSource>> = {
   cat: {
     base: require('../../assets/sprites/cats/cat_base.png'),
     black: require('../../assets/sprites/cats/cat_black.png'),
