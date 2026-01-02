@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { StatusBar } from '../components/StatusBar';
 import { IconButton } from '../components/IconButton';
+import { calculatePetAge } from '../utils/age';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -16,6 +17,8 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   if (!pet) {
     return null;
   }
+
+  const petAge = calculatePetAge(pet.createdAt);
 
   const getHungerColor = () => {
     if (pet.hunger > 60) return '#4CAF50';
@@ -29,11 +32,31 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     return '#795548';
   };
 
+  const handleMenuPress = () => {
+    Alert.alert(
+      'Voltar ao Menu',
+      'Tem certeza que quer sair? O status atual do seu pet será salvo.',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: () => navigation.goBack(),
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.petName}>
           {pet.type === 'cat' ? '🐱' : '🐶'} {pet.name}
+        </Text>
+        <Text style={styles.petAge}>
+          {petAge} {petAge === 1 ? 'ano' : 'anos'}
         </Text>
       </View>
 
@@ -75,7 +98,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
         <IconButton
           emoji="🏠"
           label="Menu"
-          onPress={() => navigation.goBack()}
+          onPress={handleMenuPress}
         />
       </View>
     </SafeAreaView>
@@ -95,6 +118,11 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#333',
+  },
+  petAge: {
+    fontSize: 18,
+    color: '#666',
+    marginTop: 4,
   },
   statusContainer: {
     paddingVertical: 8,
