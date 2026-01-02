@@ -5,10 +5,12 @@ Um jogo 2D infantil para Android usando React Native, onde crianças podem cuida
 ## ✨ Funcionalidades
 - 🐱🐶 Criar pets (gato ou cachorro)
 - 📝 Escolher nome e gênero do pet
+- 🎂 Sistema de idade (1 ano inicial, +1 por semana, máximo 19 anos)
 - 🍖 Alimentar o pet
 - 🛁 Dar banho no pet
 - 👕 Trocar roupas e acessórios (cabeça, olhos, torso, patas)
 - 💾 Persistência local dos dados
+- ⚠️ Confirmação ao sair para o menu
 
 ## 🛠️ Stack Tecnológica
 - React Native (Expo)
