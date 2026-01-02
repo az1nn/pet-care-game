@@ -11,10 +11,16 @@ import Animated, {
 import { Pet, AnimationState } from '../types';
 import { CLOTHING_ITEMS } from '../data/clothingItems';
 
-// Mapeamento de assets base
+// Mapeamento de assets base por tipo e cor
 const BASE_ASSETS = {
-  cat: require('../../assets/sprites/cats/cat_base.png'),
-  dog: require('../../assets/sprites/dogs/dog_base.png'),
+  cat: {
+    base: require('../../assets/sprites/cats/cat_base.png'),
+    black: require('../../assets/sprites/cats/cat_black.png'),
+  },
+  dog: {
+    base: require('../../assets/sprites/dogs/dog_base.png'),
+    black: require('../../assets/sprites/dogs/dog_base.png'), // Using same for now as per requirements
+  },
 };
 
 type PetRendererProps = {
@@ -55,9 +61,9 @@ export const PetRenderer: React.FC<PetRendererProps> = ({
 
   return (
     <Animated.View style={[styles.container, { width: size, height: size }, animatedStyle]}>
-      {/* Base do pet */}
+      {/* Base do pet com cor selecionada */}
       <Image
-        source={BASE_ASSETS[pet.type]}
+        source={BASE_ASSETS[pet.type][pet.color]}
         style={[styles.layer, { width: size, height: size }]}
         resizeMode="contain"
       />

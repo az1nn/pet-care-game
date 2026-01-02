@@ -16,7 +16,14 @@ export const savePet = async (pet: Pet): Promise<void> => {
 export const loadPet = async (): Promise<Pet | null> => {
   try {
     const jsonValue = await AsyncStorage.getItem(PET_STORAGE_KEY);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
+    if (jsonValue == null) return null;
+    
+    const pet = JSON.parse(jsonValue);
+    // Backward compatibility: add color field if it doesn't exist
+    if (!pet.color) {
+      pet.color = 'base';
+    }
+    return pet;
   } catch (error) {
     console.error('Erro ao carregar pet:', error);
     return null;
