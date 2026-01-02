@@ -10,7 +10,8 @@ Um jogo 2D infantil para Android usando React Native, onde crianças podem cuida
 - 🛁 Dar banho no pet
 - 👕 Trocar roupas e acessórios (cabeça, olhos, torso, patas)
 - 💾 Persistência local dos dados
-- ⚠️ Confirmação ao sair para o menu
+- ⚠️ Confirmação ao sair para o menu (funciona em web, iOS e Android)
+- 🗑️ Botão para apagar pet no menu com confirmação
 
 ## 🛠️ Stack Tecnológica
 - React Native (Expo)
