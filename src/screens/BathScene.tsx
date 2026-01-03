@@ -34,7 +34,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
 
   const SCRUBS_NEEDED = 5;
 
-  const handleScrub = async () => {
+  const handleScrub = async (giveReward: boolean = true) => {
     const newCount = scrubCount + 1;
     setScrubCount(newCount);
 
@@ -43,7 +43,9 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
       setMessage(`${pet.name} está tomando banho! 🛁💦`);
 
       await bathe(30);
-      await addMoney(1);
+      if (giveReward) {
+        await addMoney(1);
+      }
 
       setTimeout(() => {
         setAnimationState('happy');
@@ -56,6 +58,25 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
         }, 2000);
       }, 1500);
     }
+  };
+
+  const handleCompleteBath = async () => {
+    setAnimationState('bathing');
+    setMessage(`${pet.name} está tomando banho! 🛁💦`);
+
+    await bathe(30);
+    await addMoney(1);
+
+    setTimeout(() => {
+      setAnimationState('happy');
+      setMessage(`${pet.name} está limpinho! ✨ +1 🪙`);
+      setScrubCount(0);
+
+      setTimeout(() => {
+        setAnimationState('idle');
+        setMessage('Esfregue o pet para dar banho! 🧽');
+      }, 2000);
+    }, 1500);
   };
 
   const panGesture = Gesture.Pan()
@@ -116,11 +137,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
             (animationState !== 'idle' || pet.hygiene >= 100) &&
               styles.bathButtonDisabled,
           ]}
-          onPress={() => {
-            for (let i = 0; i < SCRUBS_NEEDED; i++) {
-              setTimeout(() => handleScrub(), i * 200);
-            }
-          }}
+          onPress={handleCompleteBath}
           disabled={animationState !== 'idle' || pet.hygiene >= 100}
         >
           <Text style={styles.bathButtonText}>🛁 Dar Banho Completo</Text>
