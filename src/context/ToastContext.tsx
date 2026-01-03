@@ -121,7 +121,7 @@ export const useToast = (): ToastContextType => {
     // Graceful degradation: return no-op function to prevent crashes
     console.warn('useToast called outside ToastProvider - toast notifications will not appear');
     return {
-      showToast: () => {
+      showToast: (message: string, type?: ToastType) => {
         console.warn('Toast notification ignored - ToastProvider not found in component tree');
       },
     };
