@@ -21,7 +21,7 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
   const { createPet } = usePet();
   const [name, setName] = useState('');
   const [petType, setPetType] = useState<PetType>('cat');
-  const [gender, setGender] = useState<Gender>('other');
+  const [gender, setGender] = useState<Gender>('female');
   const [color, setColor] = useState<PetColor>('base');
 
   const handleCreate = async () => {
@@ -88,13 +88,6 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.genderEmoji}>♀️</Text>
             <Text style={styles.genderText}>Fêmea</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.genderButton, gender === 'other' && styles.optionSelected]}
-            onPress={() => setGender('other')}
-          >
-            <Text style={styles.genderEmoji}>⭐</Text>
-            <Text style={styles.genderText}>Outro</Text>
-          </TouchableOpacity>
         </View>
 
         <Text style={styles.label}>Cor do pelo:</Text>
@@ -103,14 +96,14 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
             style={[styles.colorButton, color === 'base' && styles.optionSelected]}
             onPress={() => setColor('base')}
           >
-            <Text style={styles.colorEmoji}>☀️</Text>
+            <Text style={styles.colorEmoji}>⚪</Text>
             <Text style={styles.colorText}>Branco</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.colorButton, color === 'black' && styles.optionSelected]}
             onPress={() => setColor('black')}
           >
-            <Text style={styles.colorEmoji}>🌙</Text>
+            <Text style={styles.colorEmoji}>⚫</Text>
             <Text style={styles.colorText}>Preto</Text>
           </TouchableOpacity>
         </View>
