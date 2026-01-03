@@ -121,7 +121,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (!pet) return;
     const updatedPet: Pet = {
       ...pet,
-      money: (pet.money || 0) + amount,
+      money: (pet.money ?? 0) + amount, // Defensive fallback for robustness
     };
     setPet(updatedPet);
     await savePet(updatedPet);

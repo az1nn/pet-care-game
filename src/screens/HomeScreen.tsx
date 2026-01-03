@@ -53,8 +53,8 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
           {petAge} {petAge === 1 ? 'ano' : 'anos'}
         </Text>
         <View style={styles.moneyContainer}>
-          {/* Fallback for safety, though migration should ensure money exists */}
-          <Text style={styles.moneyText}>💰 {pet.money || 0} moedas</Text>
+          {/* Defensive fallback for extra safety */}
+          <Text style={styles.moneyText}>💰 {pet.money ?? 0} moedas</Text>
         </View>
       </View>
 
