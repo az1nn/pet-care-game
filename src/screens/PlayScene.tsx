@@ -31,7 +31,14 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
     setAnimationState('happy');
     setMessage(`${pet.name} está brincando com ${activity.name}! 🎉`);
 
-    await play();
+    try {
+      await play();
+    } catch (error) {
+      console.error('Error during play:', error);
+      setMessage('Erro ao brincar! 😢');
+      setAnimationState('idle');
+      return;
+    }
 
     setTimeout(() => {
       setMessage(`${pet.name} adorou brincar! 💕`);
