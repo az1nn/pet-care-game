@@ -22,7 +22,7 @@ const PLAY_ACTIVITIES = [
 ];
 
 export const PlayScene: React.FC<Props> = ({ navigation }) => {
-  const { pet, addMoney } = usePet();
+  const { pet, play, addMoney } = usePet();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('');
 
@@ -31,6 +31,15 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
   const handlePlay = async (activity: typeof PLAY_ACTIVITIES[0]) => {
     setAnimationState('happy');
     setMessage(`${pet.name} está brincando com ${activity.name}! 🎉`);
+
+    try {
+      await play();
+    } catch (error) {
+      console.error('Error during play:', error);
+      setMessage('Erro ao brincar! 😢');
+      setAnimationState('idle');
+      return;
+    }
 
     setTimeout(async () => {
       await addMoney(1);
