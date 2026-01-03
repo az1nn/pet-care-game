@@ -22,6 +22,10 @@ export const loadPet = async (): Promise<Pet | null> => {
       if (!pet.color) {
         pet.color = 'base';
       }
+      // Migration: default missing money field to 0 for existing pets
+      if (pet.money === undefined) {
+        pet.money = 0;
+      }
       return pet;
     }
     return null;

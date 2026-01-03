@@ -18,6 +18,7 @@ export type Pet = {
   gender: Gender;
   hunger: number; // 0-100
   hygiene: number; // 0-100
+  money: number; // currency earned
   clothes: Record<ClothingSlot, string | null>;
   createdAt: number;
 };

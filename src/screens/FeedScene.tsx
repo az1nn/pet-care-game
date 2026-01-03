@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
+import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { AnimationState } from '../types';
 
@@ -23,7 +24,8 @@ const FOODS = [
 ];
 
 export const FeedScene: React.FC<Props> = ({ navigation }) => {
-  const { pet, feed } = usePet();
+  const { pet, feed, earnMoney } = usePet();
+  const { showToast } = useToast();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('');
 
@@ -34,6 +36,11 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
     setMessage(`${pet.name} está comendo ${food.name}! 😋`);
 
     await feed(food.value);
+    
+    // Earn money for feeding
+    const moneyEarned = 5;
+    await earnMoney(moneyEarned);
+    showToast(`💰 +${moneyEarned} moedas ganhas!`, 'success');
 
     setTimeout(() => {
       setAnimationState('happy');

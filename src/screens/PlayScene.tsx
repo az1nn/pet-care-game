@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
+import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { AnimationState } from '../types';
 
@@ -21,7 +22,8 @@ const PLAY_ACTIVITIES = [
 ];
 
 export const PlayScene: React.FC<Props> = ({ navigation }) => {
-  const { pet, play } = usePet();
+  const { pet, play, earnMoney } = usePet();
+  const { showToast } = useToast();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('');
 
@@ -33,6 +35,11 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
 
     try {
       await play();
+      
+      // Earn money for playing
+      const moneyEarned = 10;
+      await earnMoney(moneyEarned);
+      showToast(`💰 +${moneyEarned} moedas ganhas!`, 'success');
     } catch (error) {
       console.error('Error during play:', error);
       setMessage('Erro ao brincar! 😢');

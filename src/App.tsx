@@ -5,12 +5,14 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 
 import { PetProvider, usePet } from './context/PetContext';
+import { ToastProvider } from './context/ToastContext';
 import { MenuScreen } from './screens/MenuScreen';
 import { CreatePetScreen } from './screens/CreatePetScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { FeedScene } from './screens/FeedScene';
 import { BathScene } from './screens/BathScene';
 import { WardrobeScene } from './screens/WardrobeScene';
+import { PlayScene } from './screens/PlayScene';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +41,7 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen name="Feed" component={FeedScene} />
       <Stack.Screen name="Bath" component={BathScene} />
       <Stack.Screen name="Wardrobe" component={WardrobeScene} />
+      <Stack.Screen name="Play" component={PlayScene} />
     </Stack.Navigator>
   );
 };
@@ -47,9 +50,11 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PetProvider>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
+        <ToastProvider>
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+        </ToastProvider>
       </PetProvider>
     </GestureHandlerRootView>
   );
