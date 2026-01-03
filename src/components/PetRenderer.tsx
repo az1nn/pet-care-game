@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet, ImageRequireSource } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   withRepeat,
@@ -8,13 +8,19 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { Pet, AnimationState } from '../types';
+import { Pet, PetType, PetColor, AnimationState } from '../types';
 import { CLOTHING_ITEMS } from '../data/clothingItems';
 
 // Mapeamento de assets base
-const BASE_ASSETS = {
-  cat: require('../../assets/sprites/cats/cat_base.png'),
-  dog: require('../../assets/sprites/dogs/dog_base.png'),
+const BASE_ASSETS: Record<PetType, Record<PetColor, ImageRequireSource>> = {
+  cat: {
+    base: require('../../assets/sprites/cats/cat_base.png'),
+    black: require('../../assets/sprites/cats/cat_black.png'),
+  },
+  dog: {
+    base: require('../../assets/sprites/dogs/dog_base.png'),
+    black: require('../../assets/sprites/dogs/dog_base.png'), // use base until black asset is available
+  },
 };
 
 type PetRendererProps = {
@@ -57,7 +63,7 @@ export const PetRenderer: React.FC<PetRendererProps> = ({
     <Animated.View style={[styles.container, { width: size, height: size }, animatedStyle]}>
       {/* Base do pet */}
       <Image
-        source={BASE_ASSETS[pet.type]}
+        source={BASE_ASSETS[pet.type][pet.color]}
         style={[styles.layer, { width: size, height: size }]}
         resizeMode="contain"
       />

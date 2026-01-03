@@ -1,4 +1,5 @@
 export type PetType = 'cat' | 'dog';
+export type PetColor = 'base' | 'black';
 export type Gender = 'male' | 'female' | 'other';
 export type ClothingSlot = 'head' | 'eyes' | 'torso' | 'paws';
 
@@ -13,6 +14,7 @@ export type Pet = {
   id: string;
   name: string;
   type: PetType;
+  color: PetColor;
   gender: Gender;
   hunger: number; // 0-100
   hygiene: number; // 0-100

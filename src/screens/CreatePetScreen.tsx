@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
-import { PetType, Gender } from '../types';
+import { PetType, PetColor, Gender } from '../types';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -21,11 +21,12 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
   const { createPet } = usePet();
   const [name, setName] = useState('');
   const [petType, setPetType] = useState<PetType>('cat');
-  const [gender, setGender] = useState<Gender>('other');
+  const [gender, setGender] = useState<Gender>('female');
+  const [color, setColor] = useState<PetColor>('base');
 
   const handleCreate = async () => {
     if (!name.trim()) return;
-    await createPet(name.trim(), petType, gender);
+    await createPet(name.trim(), petType, gender, color);
     navigation.replace('Home');
   };
 
@@ -87,12 +88,23 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.genderEmoji}>♀️</Text>
             <Text style={styles.genderText}>Fêmea</Text>
           </TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>Cor do pelo:</Text>
+        <View style={styles.optionRow}>
           <TouchableOpacity
-            style={[styles.genderButton, gender === 'other' && styles.optionSelected]}
-            onPress={() => setGender('other')}
+            style={[styles.colorButton, color === 'base' && styles.optionSelected]}
+            onPress={() => setColor('base')}
           >
-            <Text style={styles.genderEmoji}>⭐</Text>
-            <Text style={styles.genderText}>Outro</Text>
+            <Text style={styles.colorEmoji}>⚪</Text>
+            <Text style={styles.colorText}>Branco</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.colorButton, color === 'black' && styles.optionSelected]}
+            onPress={() => setColor('black')}
+          >
+            <Text style={styles.colorEmoji}>⚫</Text>
+            <Text style={styles.colorText}>Preto</Text>
           </TouchableOpacity>
         </View>
 
@@ -182,6 +194,25 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   genderText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#333',
+    marginTop: 4,
+  },
+  colorButton: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 12,
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 4,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  colorEmoji: {
+    fontSize: 24,
+  },
+  colorText: {
     fontSize: 12,
     fontWeight: '600',
     color: '#333',
