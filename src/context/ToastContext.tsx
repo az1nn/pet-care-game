@@ -30,7 +30,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, []);
 
   const showToast = useCallback((message: string, type: ToastType = 'success') => {
-    const id = Math.floor(Date.now() + Math.random() * 1000); // Integer-based unique ID
+    const id = Math.floor(Date.now() + Math.random() * 1000000); // Integer-based unique ID with large random component
     const newToast: Toast = { id, message, type };
 
     setToasts((prevToasts) => [...prevToasts, newToast]);
