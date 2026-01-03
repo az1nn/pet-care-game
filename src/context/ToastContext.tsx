@@ -20,7 +20,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [idCounter, setIdCounter] = useState(0);
 
   const showToast = useCallback((message: string, type: ToastType = 'success') => {
-    const id = Date.now() + Math.random(); // Combine timestamp with random for uniqueness
+    const id = Math.floor(Date.now() + Math.random() * 1000); // Integer-based unique ID
     const newToast: Toast = { id, message, type };
     
     setToasts((prevToasts) => [...prevToasts, newToast]);
