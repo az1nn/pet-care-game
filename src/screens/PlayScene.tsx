@@ -32,9 +32,8 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
     setAnimationState('happy');
     setMessage(`${pet.name} está brincando com ${activity.name}! 🎉`);
 
-    await addMoney(1);
-
-    setTimeout(() => {
+    setTimeout(async () => {
+      await addMoney(1);
       setMessage(`${pet.name} adorou brincar! 💕 +1 🪙`);
 
       setTimeout(() => {
