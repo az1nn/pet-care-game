@@ -21,15 +21,17 @@ const PLAY_ACTIVITIES = [
 ];
 
 export const PlayScene: React.FC<Props> = ({ navigation }) => {
-  const { pet } = usePet();
+  const { pet, play } = usePet();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('');
 
   if (!pet) return null;
 
-  const handlePlay = (activity: typeof PLAY_ACTIVITIES[0]) => {
+  const handlePlay = async (activity: typeof PLAY_ACTIVITIES[0]) => {
     setAnimationState('happy');
     setMessage(`${pet.name} está brincando com ${activity.name}! 🎉`);
+
+    await play();
 
     setTimeout(() => {
       setMessage(`${pet.name} adorou brincar! 💕`);

@@ -9,6 +9,7 @@ type PetContextType = {
   isLoading: boolean;
   createPet: (name: string, type: PetType, gender: Gender, color: PetColor) => Promise<void>;
   feed: (amount?: number) => Promise<void>;
+  play: () => Promise<void>;
   bathe: (amount?: number) => Promise<void>;
   setClothing: (slot: ClothingSlot, itemId: string | null) => Promise<void>;
   removePet: () => Promise<void>;
@@ -35,7 +36,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const updatedPet: Pet = {
         ...pet,
         hunger: Math.max(0, pet.hunger - 1),
-        hygiene: Math.max(0, pet.hygiene - 0.5),
+        hygiene: Math.max(0, pet.hygiene - 1),
       };
       setPet(updatedPet);
       await savePet(updatedPet);
@@ -75,11 +76,22 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     await savePet(updatedPet);
   };
 
+  const play = async () => {
+    if (!pet) return;
+    const updatedPet: Pet = {
+      ...pet,
+      hunger: Math.max(0, pet.hunger - 20),
+    };
+    setPet(updatedPet);
+    await savePet(updatedPet);
+  };
+
   const bathe = async (amount = 30) => {
     if (!pet) return;
     const updatedPet: Pet = {
       ...pet,
       hygiene: Math.min(100, pet.hygiene + amount),
+      hunger: Math.max(0, pet.hunger - 10),
     };
     setPet(updatedPet);
     await savePet(updatedPet);
@@ -110,6 +122,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         isLoading,
         createPet,
         feed,
+        play,
         bathe,
         setClothing,
         removePet,
