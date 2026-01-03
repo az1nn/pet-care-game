@@ -13,6 +13,7 @@ type PetContextType = {
   bathe: (amount?: number) => Promise<void>;
   setClothing: (slot: ClothingSlot, itemId: string | null) => Promise<void>;
   removePet: () => Promise<void>;
+  earnMoney: (amount: number) => Promise<void>;
 };
 
 const PetContext = createContext<PetContextType | undefined>(undefined);
@@ -54,6 +55,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       gender,
       hunger: 100,
       hygiene: 100,
+      money: 0,
       clothes: {
         head: null,
         eyes: null,
@@ -115,6 +117,16 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setPet(null);
   };
 
+  const earnMoney = async (amount: number) => {
+    if (!pet) return;
+    const updatedPet: Pet = {
+      ...pet,
+      money: pet.money + amount,
+    };
+    setPet(updatedPet);
+    await savePet(updatedPet);
+  };
+
   return (
     <PetContext.Provider
       value={{
@@ -126,6 +138,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         bathe,
         setClothing,
         removePet,
+        earnMoney,
       }}
     >
       {children}

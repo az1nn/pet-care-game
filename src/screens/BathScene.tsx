@@ -14,6 +14,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { usePet } from '../context/PetContext';
+import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { AnimationState } from '../types';
 
@@ -22,7 +23,8 @@ type Props = {
 };
 
 export const BathScene: React.FC<Props> = ({ navigation }) => {
-  const { pet, bathe } = usePet();
+  const { pet, bathe, earnMoney } = usePet();
+  const { showToast } = useToast();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('Esfregue o pet para dar banho! 🧽');
   const [scrubCount, setScrubCount] = useState(0);
@@ -42,6 +44,11 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
       setMessage(`${pet.name} está tomando banho! 🛁💦`);
 
       await bathe(30);
+      
+      // Earn money for bathing
+      const moneyEarned = 8;
+      await earnMoney(moneyEarned);
+      showToast(`💰 +${moneyEarned} moedas ganhas!`, 'success');
 
       setTimeout(() => {
         setAnimationState('happy');

@@ -52,6 +52,9 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
         <Text style={styles.petAge}>
           {petAge} {petAge === 1 ? 'ano' : 'anos'}
         </Text>
+        <View style={styles.moneyContainer}>
+          <Text style={styles.moneyText}>💰 {pet.money || 0} moedas</Text>
+        </View>
       </View>
 
       <View style={styles.statusContainer}>
@@ -132,6 +135,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#666',
     marginTop: 4,
+  },
+  moneyContainer: {
+    marginTop: 8,
+    backgroundColor: '#FFD700',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  moneyText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
   },
   statusContainer: {
     paddingVertical: 8,
