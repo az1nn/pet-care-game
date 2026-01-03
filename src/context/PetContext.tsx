@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Pet, PetType, Gender, ClothingSlot } from '../types';
+import { Pet, PetType, PetColor, Gender, ClothingSlot } from '../types';
 import { savePet, loadPet, deletePet } from '../utils/storage';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 type PetContextType = {
   pet: Pet | null;
   isLoading: boolean;
-  createPet: (name: string, type: PetType, gender: Gender) => Promise<void>;
+  createPet: (name: string, type: PetType, gender: Gender, color: PetColor) => Promise<void>;
   feed: (amount?: number) => Promise<void>;
   bathe: (amount?: number) => Promise<void>;
   setClothing: (slot: ClothingSlot, itemId: string | null) => Promise<void>;
@@ -44,11 +44,12 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return () => clearInterval(interval);
   }, [pet]);
 
-  const createPet = async (name: string, type: PetType, gender: Gender) => {
+  const createPet = async (name: string, type: PetType, gender: Gender, color: PetColor) => {
     const newPet: Pet = {
       id: uuidv4(),
       name,
       type,
+      color,
       gender,
       hunger: 100,
       hygiene: 100,
