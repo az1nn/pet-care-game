@@ -4,6 +4,9 @@ import { savePet, loadPet, deletePet } from '../utils/storage';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
+const PLAY_HUNGER_REDUCTION = 20;
+const BATHE_HUNGER_REDUCTION = 10;
+
 type PetContextType = {
   pet: Pet | null;
   isLoading: boolean;
@@ -82,7 +85,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (!pet) return;
     const updatedPet: Pet = {
       ...pet,
-      hunger: Math.max(0, pet.hunger - 20),
+      hunger: Math.max(0, pet.hunger - PLAY_HUNGER_REDUCTION),
     };
     setPet(updatedPet);
     await savePet(updatedPet);
@@ -93,7 +96,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const updatedPet: Pet = {
       ...pet,
       hygiene: Math.min(100, pet.hygiene + amount),
-      hunger: Math.max(0, pet.hunger - 10),
+      hunger: Math.max(0, pet.hunger - BATHE_HUNGER_REDUCTION),
     };
     setPet(updatedPet);
     await savePet(updatedPet);
