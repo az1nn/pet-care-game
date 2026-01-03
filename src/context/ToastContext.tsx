@@ -15,9 +15,10 @@ type ToastContextType = {
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
+const TOAST_DURATION = 3000; // Total duration in milliseconds
+
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
-  const [idCounter, setIdCounter] = useState(0);
   const timeoutsRef = React.useRef<ReturnType<typeof setTimeout>[]>([]);
 
   React.useEffect(() => {
@@ -29,7 +30,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, []);
 
   const showToast = useCallback((message: string, type: ToastType = 'success') => {
-    const id = Date.now() + Math.random(); // Combine timestamp with random for uniqueness
+    const id = Math.floor(Date.now() + Math.random() * 1000); // Integer-based unique ID
     const newToast: Toast = { id, message, type };
 
     setToasts((prevToasts) => [...prevToasts, newToast]);
@@ -39,7 +40,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
       // Remove this timeout from the ref once it has fired
       timeoutsRef.current = timeoutsRef.current.filter((t) => t !== timeoutId);
-    }, 3000);
+    }, TOAST_DURATION);
 
     timeoutsRef.current.push(timeoutId);
   }, []);
@@ -60,16 +61,20 @@ const ToastItem: React.FC<{ toast: Toast }> = ({ toast }) => {
   const [fadeAnim] = useState(new Animated.Value(0));
 
   React.useEffect(() => {
+    const fadeInDuration = 300;
+    const fadeOutDuration = 300;
+    const visibleDuration = TOAST_DURATION - fadeInDuration - fadeOutDuration;
+    
     Animated.sequence([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: fadeInDuration,
         useNativeDriver: true,
       }),
-      Animated.delay(2400),
+      Animated.delay(visibleDuration),
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 300,
+        duration: fadeOutDuration,
         useNativeDriver: true,
       }),
     ]).start();
