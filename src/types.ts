@@ -20,6 +20,7 @@ export type Pet = {
   hygiene: number; // 0-100
   clothes: Record<ClothingSlot, string | null>;
   createdAt: number;
+  money: number; // pet coins
 };
 
 export type AnimationState = 'idle' | 'eating' | 'bathing' | 'happy';

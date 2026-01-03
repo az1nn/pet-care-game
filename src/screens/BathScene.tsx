@@ -15,6 +15,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { usePet } from '../context/PetContext';
 import { PetRenderer } from '../components/PetRenderer';
+import { MoneyDisplay } from '../components/MoneyDisplay';
 import { AnimationState } from '../types';
 
 type Props = {
@@ -22,7 +23,7 @@ type Props = {
 };
 
 export const BathScene: React.FC<Props> = ({ navigation }) => {
-  const { pet, bathe } = usePet();
+  const { pet, bathe, addMoney } = usePet();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('Esfregue o pet para dar banho! 🧽');
   const [scrubCount, setScrubCount] = useState(0);
@@ -33,26 +34,31 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
 
   const SCRUBS_NEEDED = 5;
 
+  const completeBath = async () => {
+    setAnimationState('bathing');
+    setMessage(`${pet.name} está tomando banho! 🛁💦`);
+
+    await bathe(30);
+    await addMoney(1);
+
+    setTimeout(() => {
+      setAnimationState('happy');
+      setMessage(`${pet.name} está limpinho! ✨ +1 🪙`);
+      setScrubCount(0);
+
+      setTimeout(() => {
+        setAnimationState('idle');
+        setMessage('Esfregue o pet para dar banho! 🧽');
+      }, 2000);
+    }, 1500);
+  };
+
   const handleScrub = async () => {
     const newCount = scrubCount + 1;
     setScrubCount(newCount);
 
     if (newCount >= SCRUBS_NEEDED) {
-      setAnimationState('bathing');
-      setMessage(`${pet.name} está tomando banho! 🛁💦`);
-
-      await bathe(30);
-
-      setTimeout(() => {
-        setAnimationState('happy');
-        setMessage(`${pet.name} está limpinho! ✨`);
-        setScrubCount(0);
-
-        setTimeout(() => {
-          setAnimationState('idle');
-          setMessage('Esfregue o pet para dar banho! 🧽');
-        }, 2000);
-      }, 1500);
+      await completeBath();
     }
   };
 
@@ -76,7 +82,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.backButton}>← Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🛁 Banho</Text>
-        <View style={{ width: 60 }} />
+        <MoneyDisplay money={pet.money} />
       </View>
 
       <View style={styles.hygieneInfo}>
@@ -114,11 +120,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
             (animationState !== 'idle' || pet.hygiene >= 100) &&
               styles.bathButtonDisabled,
           ]}
-          onPress={() => {
-            for (let i = 0; i < SCRUBS_NEEDED; i++) {
-              setTimeout(() => handleScrub(), i * 200);
-            }
-          }}
+          onPress={completeBath}
           disabled={animationState !== 'idle' || pet.hygiene >= 100}
         >
           <Text style={styles.bathButtonText}>🛁 Dar Banho Completo</Text>

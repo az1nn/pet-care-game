@@ -10,6 +10,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
 import { PetRenderer } from '../components/PetRenderer';
+import { MoneyDisplay } from '../components/MoneyDisplay';
 import { ClothingSlot } from '../types';
 import { CLOTHING_ITEMS, getItemsBySlot } from '../data/clothingItems';
 
@@ -43,7 +44,7 @@ export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.backButton}>← Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>👕 Armário</Text>
-        <View style={{ width: 60 }} />
+        <MoneyDisplay money={pet.money} />
       </View>
 
       <View style={styles.petContainer}>

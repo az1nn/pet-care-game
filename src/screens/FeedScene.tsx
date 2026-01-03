@@ -9,6 +9,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
 import { PetRenderer } from '../components/PetRenderer';
+import { MoneyDisplay } from '../components/MoneyDisplay';
 import { AnimationState } from '../types';
 
 type Props = {
@@ -53,7 +54,7 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.backButton}>← Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🍖 Alimentar</Text>
-        <View style={{ width: 60 }} />
+        <MoneyDisplay money={pet.money} />
       </View>
 
       <View style={styles.petContainer}>
