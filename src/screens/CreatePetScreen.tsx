@@ -5,178 +5,247 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
-  Alert,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/types';
-
-type CreatePetScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'CreatePet'
->;
+import { usePet } from '../context/PetContext';
+import { PetType, PetColor, Gender } from '../types';
 
 type Props = {
-  navigation: CreatePetScreenNavigationProp;
+  navigation: NativeStackNavigationProp<any>;
 };
 
-const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
-  const [petName, setPetName] = useState('');
-  const [selectedColor, setSelectedColor] = useState('light');
+export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
+  const { createPet } = usePet();
+  const [name, setName] = useState('');
+  const [petType, setPetType] = useState<PetType>('cat');
+  const [gender, setGender] = useState<Gender>('other');
+  const [color, setColor] = useState<PetColor>('base');
 
-  const colors = [
-    { id: 'light', label: 'Claro', color: '#FFD700' },
-    { id: 'medium', label: 'Médio', color: '#FFA500' },
-    { id: 'dark', label: 'Escuro', color: '#FF8C00' },
-  ];
-
-  const handleCreatePet = () => {
-    if (petName.trim() === '') {
-      Alert.alert('Erro', 'Por favor, insira um nome para o seu pet!');
-      return;
-    }
-
-    // Navigate to Home with the new pet data
-    navigation.navigate('Home', {
-      petName,
-      petColor: selectedColor,
-    });
+  const handleCreate = async () => {
+    if (!name.trim()) return;
+    await createPet(name.trim(), petType, gender, color);
+    navigation.replace('Home');
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Criar Seu Pet</Text>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nome do Pet:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Digite o nome do seu pet"
-          value={petName}
-          onChangeText={setPetName}
-          maxLength={20}
-        />
-      </View>
-
-      <View style={styles.colorContainer}>
-        <Text style={styles.label}>Escolha a Cor:</Text>
-        <View style={styles.colorOptions}>
-          {colors.map((colorOption) => (
-            <TouchableOpacity
-              key={colorOption.id}
-              style={[
-                styles.colorOption,
-                selectedColor === colorOption.id && styles.selectedColorOption,
-              ]}
-              onPress={() => setSelectedColor(colorOption.id)}
-            >
-              <View
-                style={[
-                  styles.colorCircle,
-                  { backgroundColor: colorOption.color },
-                ]}
-              />
-              <Text style={styles.colorText}>{colorOption.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.createButton} onPress={handleCreatePet}>
-        <Text style={styles.createButtonText}>Criar Pet</Text>
-      </TouchableOpacity>
-
+    <SafeAreaView style={styles.container}>
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate('Menu')}
       >
-        <Text style={styles.backButtonText}>Voltar</Text>
+        <Text style={styles.backButtonText}>← Voltar</Text>
       </TouchableOpacity>
-    </ScrollView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.content}
+      >
+        <Text style={styles.title}>🐾 Criar Novo Pet</Text>
+
+        <Text style={styles.label}>Escolha seu pet:</Text>
+        <View style={styles.optionRow}>
+          <TouchableOpacity
+            style={[styles.optionButton, petType === 'cat' && styles.optionSelected]}
+            onPress={() => setPetType('cat')}
+          >
+            <Text style={styles.optionEmoji}>🐱</Text>
+            <Text style={styles.optionText}>Gato</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.optionButton, petType === 'dog' && styles.optionSelected]}
+            onPress={() => setPetType('dog')}
+          >
+            <Text style={styles.optionEmoji}>🐶</Text>
+            <Text style={styles.optionText}>Cachorro</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>Nome do pet:</Text>
+        <TextInput
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+          placeholder="Digite o nome..."
+          placeholderTextColor="#999"
+          maxLength={20}
+        />
+
+        <Text style={styles.label}>Gênero:</Text>
+        <View style={styles.optionRow}>
+          <TouchableOpacity
+            style={[styles.genderButton, gender === 'male' && styles.optionSelected]}
+            onPress={() => setGender('male')}
+          >
+            <Text style={styles.genderEmoji}>♂️</Text>
+            <Text style={styles.genderText}>Macho</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.genderButton, gender === 'female' && styles.optionSelected]}
+            onPress={() => setGender('female')}
+          >
+            <Text style={styles.genderEmoji}>♀️</Text>
+            <Text style={styles.genderText}>Fêmea</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.genderButton, gender === 'other' && styles.optionSelected]}
+            onPress={() => setGender('other')}
+          >
+            <Text style={styles.genderEmoji}>⭐</Text>
+            <Text style={styles.genderText}>Outro</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>Cor do pelo:</Text>
+        <View style={styles.optionRow}>
+          <TouchableOpacity
+            style={[styles.colorButton, color === 'base' && styles.optionSelected]}
+            onPress={() => setColor('base')}
+          >
+            <Text style={styles.colorEmoji}>☀️</Text>
+            <Text style={styles.colorText}>Branco</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.colorButton, color === 'black' && styles.optionSelected]}
+            onPress={() => setColor('black')}
+          >
+            <Text style={styles.colorEmoji}>🌙</Text>
+            <Text style={styles.colorText}>Preto</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity
+          style={[styles.createButton, !name.trim() && styles.createButtonDisabled]}
+          onPress={handleCreate}
+          disabled={!name.trim()}
+        >
+          <Text style={styles.createButtonText}>Criar Pet! 🎉</Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: '#F0F8FF',
-    alignItems: 'center',
+    flex: 1,
+    backgroundColor: '#f5f0ff',
+  },
+  backButton: {
+    padding: 16,
+    paddingTop: 8,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#9b59b6',
+    fontWeight: '600',
+  },
+  content: {
+    flex: 1,
+    padding: 24,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FF6347',
-    marginBottom: 30,
-    marginTop: 20,
-  },
-  inputContainer: {
-    width: '100%',
-    marginBottom: 30,
+    textAlign: 'center',
+    marginBottom: 32,
+    color: '#333',
   },
   label: {
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#555',
+    marginBottom: 8,
+    marginTop: 16,
+  },
+  optionRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  optionButton: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    minWidth: 120,
+    borderWidth: 3,
+    borderColor: 'transparent',
+  },
+  optionSelected: {
+    borderColor: '#9b59b6',
+    backgroundColor: '#f3e5f5',
+  },
+  optionEmoji: {
+    fontSize: 48,
+    marginBottom: 8,
+  },
+  optionText: {
+    fontSize: 16,
     fontWeight: '600',
     color: '#333',
-    marginBottom: 10,
   },
-  input: {
-    backgroundColor: '#FFF',
-    borderWidth: 2,
-    borderColor: '#FFB6C1',
-    borderRadius: 10,
-    padding: 15,
-    fontSize: 16,
-  },
-  colorContainer: {
-    width: '100%',
-    marginBottom: 30,
-  },
-  colorOptions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 10,
-  },
-  colorOption: {
+  genderButton: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 12,
     alignItems: 'center',
-    padding: 10,
+    flex: 1,
+    marginHorizontal: 4,
     borderWidth: 2,
     borderColor: 'transparent',
-    borderRadius: 10,
   },
-  selectedColorOption: {
-    borderColor: '#FF6347',
-    backgroundColor: '#FFE4E1',
+  genderEmoji: {
+    fontSize: 24,
   },
-  colorCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginBottom: 5,
+  genderText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#333',
+    marginTop: 4,
+  },
+  colorButton: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 12,
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 4,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  colorEmoji: {
+    fontSize: 24,
   },
   colorText: {
-    fontSize: 14,
+    fontSize: 12,
+    fontWeight: '600',
     color: '#333',
+    marginTop: 4,
+  },
+  input: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 18,
+    borderWidth: 2,
+    borderColor: '#e0e0e0',
   },
   createButton: {
-    backgroundColor: '#FF6347',
-    paddingVertical: 15,
-    paddingHorizontal: 50,
-    borderRadius: 25,
-    marginBottom: 15,
+    backgroundColor: '#9b59b6',
+    borderRadius: 16,
+    padding: 18,
+    alignItems: 'center',
+    marginTop: 32,
+  },
+  createButtonDisabled: {
+    backgroundColor: '#ccc',
   },
   createButtonText: {
-    color: '#FFF',
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 20,
     fontWeight: 'bold',
   },
-  backButton: {
-    paddingVertical: 10,
-  },
-  backButtonText: {
-    color: '#FF6347',
-    fontSize: 16,
-  },
 });
-
-export default CreatePetScreen;
