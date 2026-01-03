@@ -28,10 +28,10 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
   if (!pet) return null;
 
   const handlePlay = (activity: typeof PLAY_ACTIVITIES[0]) => {
+    setAnimationState('happy');
     setMessage(`${pet.name} está brincando com ${activity.name}! 🎉`);
 
     setTimeout(() => {
-      setAnimationState('happy');
       setMessage(`${pet.name} adorou brincar! 💕`);
 
       setTimeout(() => {
