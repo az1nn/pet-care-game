@@ -18,17 +18,30 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [idCounter, setIdCounter] = useState(0);
+  const timeoutsRef = React.useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  React.useEffect(() => {
+    return () => {
+      // Clear any pending toast timeouts on unmount to avoid memory leaks
+      timeoutsRef.current.forEach((timeoutId) => clearTimeout(timeoutId));
+      timeoutsRef.current = [];
+    };
+  }, []);
 
   const showToast = useCallback((message: string, type: ToastType = 'success') => {
-    const id = Math.floor(Date.now() + Math.random() * 1000); // Integer-based unique ID
+    const id = Date.now() + Math.random(); // Combine timestamp with random for uniqueness
     const newToast: Toast = { id, message, type };
-    
+
     setToasts((prevToasts) => [...prevToasts, newToast]);
 
     // Auto-dismiss after 3 seconds
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+      // Remove this timeout from the ref once it has fired
+      timeoutsRef.current = timeoutsRef.current.filter((t) => t !== timeoutId);
     }, 3000);
+
+    timeoutsRef.current.push(timeoutId);
   }, []);
 
   return (
