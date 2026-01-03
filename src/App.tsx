@@ -49,13 +49,13 @@ const AppNavigator: React.FC = () => {
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ToastProvider>
-        <PetProvider>
+      <PetProvider>
+        <ToastProvider>
           <NavigationContainer>
             <AppNavigator />
           </NavigationContainer>
-        </PetProvider>
-      </ToastProvider>
+        </ToastProvider>
+      </PetProvider>
     </GestureHandlerRootView>
   );
 }
