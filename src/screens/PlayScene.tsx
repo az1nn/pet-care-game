@@ -9,6 +9,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
 import { PetRenderer } from '../components/PetRenderer';
+import { MoneyDisplay } from '../components/MoneyDisplay';
 import { AnimationState } from '../types';
 
 type Props = {
@@ -21,18 +22,20 @@ const PLAY_ACTIVITIES = [
 ];
 
 export const PlayScene: React.FC<Props> = ({ navigation }) => {
-  const { pet } = usePet();
+  const { pet, addMoney } = usePet();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('');
 
   if (!pet) return null;
 
-  const handlePlay = (activity: typeof PLAY_ACTIVITIES[0]) => {
+  const handlePlay = async (activity: typeof PLAY_ACTIVITIES[0]) => {
     setAnimationState('happy');
     setMessage(`${pet.name} está brincando com ${activity.name}! 🎉`);
 
+    await addMoney(1);
+
     setTimeout(() => {
-      setMessage(`${pet.name} adorou brincar! 💕`);
+      setMessage(`${pet.name} adorou brincar! 💕 +1 🪙`);
 
       setTimeout(() => {
         setAnimationState('idle');
@@ -48,7 +51,7 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.backButton}>← Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🎮 Brincar</Text>
-        <View style={{ width: 60 }} />
+        <MoneyDisplay money={pet.money} />
       </View>
 
       <View style={styles.petContainer}>

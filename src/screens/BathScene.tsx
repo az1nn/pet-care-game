@@ -15,6 +15,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { usePet } from '../context/PetContext';
 import { PetRenderer } from '../components/PetRenderer';
+import { MoneyDisplay } from '../components/MoneyDisplay';
 import { AnimationState } from '../types';
 
 type Props = {
@@ -22,7 +23,7 @@ type Props = {
 };
 
 export const BathScene: React.FC<Props> = ({ navigation }) => {
-  const { pet, bathe } = usePet();
+  const { pet, bathe, addMoney } = usePet();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('Esfregue o pet para dar banho! 🧽');
   const [scrubCount, setScrubCount] = useState(0);
@@ -42,10 +43,11 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
       setMessage(`${pet.name} está tomando banho! 🛁💦`);
 
       await bathe(30);
+      await addMoney(1);
 
       setTimeout(() => {
         setAnimationState('happy');
-        setMessage(`${pet.name} está limpinho! ✨`);
+        setMessage(`${pet.name} está limpinho! ✨ +1 🪙`);
         setScrubCount(0);
 
         setTimeout(() => {
@@ -76,7 +78,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.backButton}>← Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🛁 Banho</Text>
-        <View style={{ width: 60 }} />
+        <MoneyDisplay money={pet.money} />
       </View>
 
       <View style={styles.hygieneInfo}>

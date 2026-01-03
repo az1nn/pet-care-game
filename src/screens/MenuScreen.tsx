@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
+import { MoneyDisplay } from '../components/MoneyDisplay';
 import { ConfirmModal } from '../components/ConfirmModal';
 
 type Props = {
@@ -52,6 +53,11 @@ export const MenuScreen: React.FC<Props> = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
+            {pet && (
+                <View style={styles.moneyContainer}>
+                    <MoneyDisplay money={pet.money} />
+                </View>
+            )}
             <View style={styles.content}>
                 <Text style={styles.title}>🐾 Pet Care</Text>
                 <Text style={styles.subtitle}>Cuide do seu amiguinho virtual!</Text>
@@ -119,6 +125,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f0ff',
+    },
+    moneyContainer: {
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        zIndex: 10,
     },
     content: {
         flex: 1,

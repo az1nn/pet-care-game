@@ -6,6 +6,7 @@ import { PetRenderer } from '../components/PetRenderer';
 import { StatusBar } from '../components/StatusBar';
 import { IconButton } from '../components/IconButton';
 import { ConfirmModal } from '../components/ConfirmModal';
+import { MoneyDisplay } from '../components/MoneyDisplay';
 import { calculatePetAge } from '../utils/age';
 
 type Props = {
@@ -46,12 +47,15 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.petName}>
-          {pet.type === 'cat' ? '🐱' : '🐶'} {pet.name}
-        </Text>
-        <Text style={styles.petAge}>
-          {petAge} {petAge === 1 ? 'ano' : 'anos'}
-        </Text>
+        <View>
+          <Text style={styles.petName}>
+            {pet.type === 'cat' ? '🐱' : '🐶'} {pet.name}
+          </Text>
+          <Text style={styles.petAge}>
+            {petAge} {petAge === 1 ? 'ano' : 'anos'}
+          </Text>
+        </View>
+        <MoneyDisplay money={pet.money} />
       </View>
 
       <View style={styles.statusContainer}>
@@ -121,6 +125,8 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   petName: {
