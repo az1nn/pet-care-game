@@ -74,7 +74,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
       </View>
 
       <View style={styles.petContainer}>
-        <PetRenderer pet={pet} size={420} />
+        <PetRenderer pet={pet} size={630} />
       </View>
 
       <View style={styles.actionsContainer}>

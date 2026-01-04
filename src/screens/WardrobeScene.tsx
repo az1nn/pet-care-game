@@ -47,7 +47,7 @@ export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
       </View>
 
       <View style={styles.petContainer}>
-        <PetRenderer pet={pet} size={300} />
+        <PetRenderer pet={pet} size={450} />
       </View>
 
       <View style={styles.slotSelector}>

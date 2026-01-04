@@ -94,7 +94,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
 
       <GestureDetector gesture={panGesture}>
         <Animated.View style={[styles.petContainer, animatedStyle]}>
-          <PetRenderer pet={pet} animationState={animationState} size={420} />
+          <PetRenderer pet={pet} animationState={animationState} size={630} />
 
           {/* Bolhas decorativas */}
           <View style={styles.bubbles}>

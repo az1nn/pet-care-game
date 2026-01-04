@@ -32,7 +32,7 @@ type PetRendererProps = {
 export const PetRenderer: React.FC<PetRendererProps> = ({
   pet,
   animationState = 'idle',
-  size = 450,
+  size = 675,
 }) => {
   const bounceValue = useSharedValue(0);
 
