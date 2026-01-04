@@ -79,6 +79,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
   const isMoving = useSharedValue(false);
   const bubbleIdCounter = React.useRef(0);
   const timeoutRefs = React.useRef<Set<NodeJS.Timeout>>(new Set());
+  const lastBubbleTime = React.useRef(0);
 
   if (!pet) return null;
 
@@ -86,10 +87,20 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
   const BUBBLE_VELOCITY_THRESHOLD = 100;
   const BUBBLE_POSITION_VARIANCE = 40;
   const BUBBLE_POSITION_OFFSET = 20;
+  const BUBBLE_THROTTLE_MS = 100; // Minimum time between bubble creation
 
   const addBubble = (x: number, y: number) => {
+    const now = Date.now();
+    
+    // Throttle bubble creation to prevent performance issues
+    if (now - lastBubbleTime.current < BUBBLE_THROTTLE_MS) {
+      return;
+    }
+    
+    lastBubbleTime.current = now;
+    
     const newBubble: Bubble = {
-      id: Date.now() + (bubbleIdCounter.current++),
+      id: now + (bubbleIdCounter.current++),
       x: x + Math.random() * BUBBLE_POSITION_VARIANCE - BUBBLE_POSITION_OFFSET,
       y: y + Math.random() * BUBBLE_POSITION_VARIANCE - BUBBLE_POSITION_OFFSET,
       scale: 0.5 + Math.random() * 0.5,
