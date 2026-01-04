@@ -29,23 +29,16 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
 
   if (!pet) return null;
 
-  const handlePlay = async (activity: typeof PLAY_ACTIVITIES[0]) => {
+  const handlePlay = (activity: typeof PLAY_ACTIVITIES[0]) => {
     setAnimationState('happy');
     setMessage(`${pet.name} está brincando com ${activity.name}! 🎉`);
 
-    try {
-      await play();
-      
-      // Earn money for playing
-      const moneyEarned = 10;
-      await earnMoney(moneyEarned);
-      showToast(`💰 +${moneyEarned} moedas ganhas!`, 'success');
-    } catch (error) {
-      console.error('Error during play:', error);
-      setMessage('Erro ao brincar! 😢');
-      setAnimationState('idle');
-      return;
-    }
+    play();
+    
+    // Earn money for playing
+    const moneyEarned = 10;
+    earnMoney(moneyEarned);
+    showToast(`💰 +${moneyEarned} moedas ganhas!`, 'success');
 
     setTimeout(() => {
       setMessage(`${pet.name} adorou brincar! 💕`);

@@ -8,12 +8,12 @@ type PetContextType = {
   pet: Pet | null;
   isLoading: boolean;
   createPet: (name: string, type: PetType, gender: Gender, color: PetColor) => Promise<void>;
-  feed: (amount?: number) => Promise<void>;
-  play: () => Promise<void>;
-  bathe: (amount?: number) => Promise<void>;
-  setClothing: (slot: ClothingSlot, itemId: string | null) => Promise<void>;
+  feed: (amount?: number) => void;
+  play: () => void;
+  bathe: (amount?: number) => void;
+  setClothing: (slot: ClothingSlot, itemId: string | null) => void;
   removePet: () => Promise<void>;
-  earnMoney: (amount: number) => Promise<void>;
+  earnMoney: (amount: number) => void;
 };
 
 const PetContext = createContext<PetContextType | undefined>(undefined);
@@ -71,7 +71,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     await savePet(newPet);
   };
 
-  const feed = async (amount = 25) => {
+  const feed = (amount = 25) => {
     setPet((currentPet) => {
       if (!currentPet) return currentPet;
       
@@ -84,7 +84,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     });
   };
 
-  const play = async () => {
+  const play = () => {
     setPet((currentPet) => {
       if (!currentPet) return currentPet;
       
@@ -97,7 +97,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     });
   };
 
-  const bathe = async (amount = 30) => {
+  const bathe = (amount = 30) => {
     setPet((currentPet) => {
       if (!currentPet) return currentPet;
       
@@ -111,7 +111,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     });
   };
 
-  const setClothing = async (slot: ClothingSlot, itemId: string | null) => {
+  const setClothing = (slot: ClothingSlot, itemId: string | null) => {
     setPet((currentPet) => {
       if (!currentPet) return currentPet;
       
@@ -132,7 +132,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setPet(null);
   };
 
-  const earnMoney = async (amount: number) => {
+  const earnMoney = (amount: number) => {
     setPet((currentPet) => {
       if (!currentPet) return currentPet;
       
