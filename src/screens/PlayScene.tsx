@@ -68,7 +68,7 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
       </View>
 
       <View style={styles.petContainer}>
-        <PetRenderer pet={pet} animationState={animationState} size={250} />
+        <PetRenderer pet={pet} animationState={animationState} size={375} />
         {message ? <Text style={styles.message}>{message}</Text> : null}
       </View>
 
