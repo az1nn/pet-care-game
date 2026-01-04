@@ -35,7 +35,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
 
   const SCRUBS_NEEDED = 5;
 
-  const handleScrub = async () => {
+  const handleScrub = () => {
     const newCount = scrubCount + 1;
     setScrubCount(newCount);
 
@@ -43,11 +43,11 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
       setAnimationState('bathing');
       setMessage(`${pet.name} está tomando banho! 🛁💦`);
 
-      await bathe(30);
+      bathe(30);
       
       // Earn money for bathing
       const moneyEarned = 8;
-      await earnMoney(moneyEarned);
+      earnMoney(moneyEarned);
       showToast(`💰 +${moneyEarned} moedas ganhas!`, 'success');
 
       setTimeout(() => {

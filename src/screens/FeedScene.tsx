@@ -31,15 +31,15 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
 
   if (!pet) return null;
 
-  const handleFeed = async (food: typeof FOODS[0]) => {
+  const handleFeed = (food: typeof FOODS[0]) => {
     setAnimationState('eating');
     setMessage(`${pet.name} está comendo ${food.name}! 😋`);
 
-    await feed(food.value);
+    feed(food.value);
     
     // Earn money for feeding
     const moneyEarned = 5;
-    await earnMoney(moneyEarned);
+    earnMoney(moneyEarned);
     showToast(`💰 +${moneyEarned} moedas ganhas!`, 'success');
 
     setTimeout(() => {

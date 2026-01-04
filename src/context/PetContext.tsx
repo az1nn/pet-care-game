@@ -8,12 +8,12 @@ type PetContextType = {
   pet: Pet | null;
   isLoading: boolean;
   createPet: (name: string, type: PetType, gender: Gender, color: PetColor) => Promise<void>;
-  feed: (amount?: number) => Promise<void>;
-  play: () => Promise<void>;
-  bathe: (amount?: number) => Promise<void>;
-  setClothing: (slot: ClothingSlot, itemId: string | null) => Promise<void>;
+  feed: (amount?: number) => void;
+  play: () => void;
+  bathe: (amount?: number) => void;
+  setClothing: (slot: ClothingSlot, itemId: string | null) => void;
   removePet: () => Promise<void>;
-  earnMoney: (amount: number) => Promise<void>;
+  earnMoney: (amount: number) => void;
 };
 
 const PetContext = createContext<PetContextType | undefined>(undefined);
@@ -31,20 +31,23 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Decaimento gradual de fome e higiene
   useEffect(() => {
-    if (!pet) return;
-
-    const interval = setInterval(async () => {
-      const updatedPet: Pet = {
-        ...pet,
-        hunger: Math.max(0, pet.hunger - 1),
-        hygiene: Math.max(0, pet.hygiene - 1),
-      };
-      setPet(updatedPet);
-      await savePet(updatedPet);
+    const interval = setInterval(() => {
+      setPet((currentPet) => {
+        if (!currentPet) return currentPet;
+        
+        const updatedPet: Pet = {
+          ...currentPet,
+          hunger: Math.max(0, currentPet.hunger - 1),
+          hygiene: Math.max(0, currentPet.hygiene - 1),
+        };
+        // Save asynchronously without blocking state update
+        savePet(updatedPet).catch(console.error);
+        return updatedPet;
+      });
     }, 60000); // a cada minuto
 
     return () => clearInterval(interval);
-  }, [pet]);
+  }, []);
 
   const createPet = async (name: string, type: PetType, gender: Gender, color: PetColor) => {
     const newPet: Pet = {
@@ -68,48 +71,60 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     await savePet(newPet);
   };
 
-  const feed = async (amount = 25) => {
-    if (!pet) return;
-    const updatedPet: Pet = {
-      ...pet,
-      hunger: Math.min(100, pet.hunger + amount),
-    };
-    setPet(updatedPet);
-    await savePet(updatedPet);
+  const feed = (amount = 25) => {
+    setPet((currentPet) => {
+      if (!currentPet) return currentPet;
+      
+      const updatedPet: Pet = {
+        ...currentPet,
+        hunger: Math.min(100, currentPet.hunger + amount),
+      };
+      savePet(updatedPet).catch(console.error);
+      return updatedPet;
+    });
   };
 
-  const play = async () => {
-    if (!pet) return;
-    const updatedPet: Pet = {
-      ...pet,
-      hunger: Math.max(0, pet.hunger - 20),
-    };
-    setPet(updatedPet);
-    await savePet(updatedPet);
+  const play = () => {
+    setPet((currentPet) => {
+      if (!currentPet) return currentPet;
+      
+      const updatedPet: Pet = {
+        ...currentPet,
+        hunger: Math.max(0, currentPet.hunger - 20),
+      };
+      savePet(updatedPet).catch(console.error);
+      return updatedPet;
+    });
   };
 
-  const bathe = async (amount = 30) => {
-    if (!pet) return;
-    const updatedPet: Pet = {
-      ...pet,
-      hygiene: Math.min(100, pet.hygiene + amount),
-      hunger: Math.max(0, pet.hunger - 10),
-    };
-    setPet(updatedPet);
-    await savePet(updatedPet);
+  const bathe = (amount = 30) => {
+    setPet((currentPet) => {
+      if (!currentPet) return currentPet;
+      
+      const updatedPet: Pet = {
+        ...currentPet,
+        hygiene: Math.min(100, currentPet.hygiene + amount),
+        hunger: Math.max(0, currentPet.hunger - 10),
+      };
+      savePet(updatedPet).catch(console.error);
+      return updatedPet;
+    });
   };
 
-  const setClothing = async (slot: ClothingSlot, itemId: string | null) => {
-    if (!pet) return;
-    const updatedPet: Pet = {
-      ...pet,
-      clothes: {
-        ...pet.clothes,
-        [slot]: itemId,
-      },
-    };
-    setPet(updatedPet);
-    await savePet(updatedPet);
+  const setClothing = (slot: ClothingSlot, itemId: string | null) => {
+    setPet((currentPet) => {
+      if (!currentPet) return currentPet;
+      
+      const updatedPet: Pet = {
+        ...currentPet,
+        clothes: {
+          ...currentPet.clothes,
+          [slot]: itemId,
+        },
+      };
+      savePet(updatedPet).catch(console.error);
+      return updatedPet;
+    });
   };
 
   const removePet = async () => {
@@ -117,14 +132,17 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setPet(null);
   };
 
-  const earnMoney = async (amount: number) => {
-    if (!pet) return;
-    const updatedPet: Pet = {
-      ...pet,
-      money: (pet.money ?? 0) + amount, // Defensive fallback for robustness
-    };
-    setPet(updatedPet);
-    await savePet(updatedPet);
+  const earnMoney = (amount: number) => {
+    setPet((currentPet) => {
+      if (!currentPet) return currentPet;
+      
+      const updatedPet: Pet = {
+        ...currentPet,
+        money: (currentPet.money ?? 0) + amount, // Defensive fallback for robustness
+      };
+      savePet(updatedPet).catch(console.error);
+      return updatedPet;
+    });
   };
 
   return (

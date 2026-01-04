@@ -32,8 +32,8 @@ export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
 
   const itemsForSlot = getItemsBySlot(selectedSlot);
 
-  const handleSelectItem = async (itemId: string | null) => {
-    await setClothing(selectedSlot, itemId);
+  const handleSelectItem = (itemId: string | null) => {
+    setClothing(selectedSlot, itemId);
   };
 
   return (
