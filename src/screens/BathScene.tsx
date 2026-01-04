@@ -81,12 +81,17 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
   if (!pet) return null;
 
   const SCRUBS_NEEDED = 5;
+  const BUBBLE_VELOCITY_THRESHOLD = 100;
+  const BUBBLE_POSITION_VARIANCE = 40;
+  const BUBBLE_POSITION_OFFSET = 20;
+
+  let bubbleIdCounter = 0;
 
   const addBubble = (x: number, y: number) => {
     const newBubble: Bubble = {
-      id: Date.now() + Math.random(),
-      x: x + Math.random() * 40 - 20,
-      y: y + Math.random() * 40 - 20,
+      id: Date.now() + (bubbleIdCounter++),
+      x: x + Math.random() * BUBBLE_POSITION_VARIANCE - BUBBLE_POSITION_OFFSET,
+      y: y + Math.random() * BUBBLE_POSITION_VARIANCE - BUBBLE_POSITION_OFFSET,
       scale: 0.5 + Math.random() * 0.5,
     };
     
@@ -144,7 +149,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
       spongeY.value = e.translationY;
       
       // Generate bubbles while moving
-      if (Math.abs(e.velocityX) > 100 || Math.abs(e.velocityY) > 100) {
+      if (Math.abs(e.velocityX) > BUBBLE_VELOCITY_THRESHOLD || Math.abs(e.velocityY) > BUBBLE_VELOCITY_THRESHOLD) {
         addBubble(e.absoluteX, e.absoluteY);
       }
     })
