@@ -45,7 +45,7 @@ const BubbleComponent: React.FC<{ bubble: Bubble }> = ({ bubble }) => {
       withTiming(bubble.scale * 1.5, { duration: 500 }),
       withTiming(0, { duration: 1000 })
     );
-  }, []);
+  }, [bubble.scale, opacity, scale]);
 
   const bubbleStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -77,6 +77,8 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
   const spongeX = useSharedValue(0);
   const spongeY = useSharedValue(0);
   const isMoving = useSharedValue(false);
+  const bubbleIdCounter = React.useRef(0);
+  const timeoutRefs = React.useRef<Set<NodeJS.Timeout>>(new Set());
 
   if (!pet) return null;
 
@@ -85,11 +87,9 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
   const BUBBLE_POSITION_VARIANCE = 40;
   const BUBBLE_POSITION_OFFSET = 20;
 
-  let bubbleIdCounter = 0;
-
   const addBubble = (x: number, y: number) => {
     const newBubble: Bubble = {
-      id: Date.now() + (bubbleIdCounter++),
+      id: Date.now() + (bubbleIdCounter.current++),
       x: x + Math.random() * BUBBLE_POSITION_VARIANCE - BUBBLE_POSITION_OFFSET,
       y: y + Math.random() * BUBBLE_POSITION_VARIANCE - BUBBLE_POSITION_OFFSET,
       scale: 0.5 + Math.random() * 0.5,
@@ -98,10 +98,20 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
     setBubbles(prev => [...prev, newBubble]);
     
     // Remove bubble after animation
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setBubbles(prev => prev.filter(b => b.id !== newBubble.id));
+      timeoutRefs.current.delete(timeoutId);
     }, 1500);
+    timeoutRefs.current.add(timeoutId);
   };
+
+  // Cleanup timeouts on unmount
+  React.useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach(timeout => clearTimeout(timeout));
+      timeoutRefs.current.clear();
+    };
+  }, []);
 
   const handleScrub = () => {
     const newCount = scrubCount + 1;
