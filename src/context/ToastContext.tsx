@@ -118,7 +118,13 @@ const ToastItem: React.FC<{ toast: Toast }> = ({ toast }) => {
 export const useToast = (): ToastContextType => {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error('useToast deve ser usado dentro de ToastProvider');
+    // Graceful degradation: return no-op function to prevent crashes
+    console.warn('useToast called outside ToastProvider - toast notifications will not appear');
+    return {
+      showToast: (message: string, type?: ToastType) => {
+        console.warn('Toast notification ignored - ToastProvider not found in component tree');
+      },
+    };
   }
   return context;
 };
