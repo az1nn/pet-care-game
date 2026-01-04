@@ -31,20 +31,22 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Decaimento gradual de fome e higiene
   useEffect(() => {
-    if (!pet) return;
-
     const interval = setInterval(async () => {
-      const updatedPet: Pet = {
-        ...pet,
-        hunger: Math.max(0, pet.hunger - 1),
-        hygiene: Math.max(0, pet.hygiene - 1),
-      };
-      setPet(updatedPet);
-      await savePet(updatedPet);
+      setPet((currentPet) => {
+        if (!currentPet) return currentPet;
+        
+        const updatedPet: Pet = {
+          ...currentPet,
+          hunger: Math.max(0, currentPet.hunger - 1),
+          hygiene: Math.max(0, currentPet.hygiene - 1),
+        };
+        savePet(updatedPet);
+        return updatedPet;
+      });
     }, 60000); // a cada minuto
 
     return () => clearInterval(interval);
-  }, [pet]);
+  }, []);
 
   const createPet = async (name: string, type: PetType, gender: Gender, color: PetColor) => {
     const newPet: Pet = {
