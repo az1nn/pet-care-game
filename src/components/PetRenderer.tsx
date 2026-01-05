@@ -23,6 +23,9 @@ const BASE_ASSETS: Record<PetType, Record<PetColor, ImageRequireSource>> = {
   },
 };
 
+// Dirt mark size ratio relative to pet size
+const DIRT_MARK_SIZE_RATIO = 0.071;
+
 type PetRendererProps = {
   pet: Pet;
   animationState?: AnimationState;
@@ -123,25 +126,20 @@ export const PetRenderer: React.FC<PetRendererProps> = ({
       )}
 
       {/* Dirt marks - show based on hygiene level */}
-      {Array.from({ length: dirtMarksCount }, (_, index) => {
-        // Safeguard: ensure we don't exceed available positions
-        if (index >= dirtMarkPositions.length) return null;
-        
-        return (
-          <View
-            key={`dirt-${index}`}
-            style={[
-              styles.dirtMark,
-              {
-                left: dirtMarkPositions[index].left,
-                top: dirtMarkPositions[index].top,
-              },
-            ]}
-          >
-            <Text style={[styles.dirtEmoji, { fontSize: size * 0.071 }]}>💩</Text>
-          </View>
-        );
-      })}
+      {Array.from({ length: Math.min(dirtMarksCount, dirtMarkPositions.length) }, (_, index) => (
+        <View
+          key={`dirt-${index}`}
+          style={[
+            styles.dirtMark,
+            {
+              left: dirtMarkPositions[index].left,
+              top: dirtMarkPositions[index].top,
+            },
+          ]}
+        >
+          <Text style={[styles.dirtEmoji, { fontSize: size * DIRT_MARK_SIZE_RATIO }]}>💩</Text>
+        </View>
+      ))}
     </Animated.View>
   );
 };
