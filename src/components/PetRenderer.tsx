@@ -138,7 +138,7 @@ export const PetRenderer: React.FC<PetRendererProps> = ({
               },
             ]}
           >
-            <Text style={styles.dirtEmoji}>💩</Text>
+            <Text style={[styles.dirtEmoji, { fontSize: size * 0.071 }]}>💩</Text>
           </View>
         );
       })}
@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   dirtEmoji: {
-    fontSize: 32, // Relative to default pet size of 450px
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
