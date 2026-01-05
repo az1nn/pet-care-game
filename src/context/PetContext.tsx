@@ -91,6 +91,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const updatedPet: Pet = {
         ...currentPet,
         hunger: Math.max(0, currentPet.hunger - 20),
+        hygiene: Math.max(0, currentPet.hygiene - 20),
       };
       savePet(updatedPet).catch(console.error);
       return updatedPet;
