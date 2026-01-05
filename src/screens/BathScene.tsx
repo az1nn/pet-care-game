@@ -5,6 +5,7 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
@@ -12,6 +13,8 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
+  withTiming,
+  withSequence,
 } from 'react-native-reanimated';
 import { usePet } from '../context/PetContext';
 import { useToast } from '../context/ToastContext';
@@ -22,18 +25,104 @@ type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
 
+type Bubble = {
+  id: number;
+  x: number;
+  y: number;
+  scale: number;
+};
+
+const BubbleComponent: React.FC<{ bubble: Bubble }> = ({ bubble }) => {
+  const opacity = useSharedValue(1);
+  const scale = useSharedValue(bubble.scale);
+  
+  React.useEffect(() => {
+    opacity.value = withSequence(
+      withTiming(1, { duration: 200 }),
+      withTiming(0, { duration: 1300 })
+    );
+    scale.value = withSequence(
+      withTiming(bubble.scale * 1.5, { duration: 500 }),
+      withTiming(0, { duration: 1000 })
+    );
+  }, [bubble.scale, opacity, scale]);
+
+  const bubbleStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
+  }));
+
+  return (
+    <Animated.View
+      style={[
+        styles.dynamicBubble,
+        { left: bubble.x, top: bubble.y },
+        bubbleStyle,
+      ]}
+    >
+      <Text style={styles.bubbleEmoji}>🫧</Text>
+    </Animated.View>
+  );
+};
+
 export const BathScene: React.FC<Props> = ({ navigation }) => {
   const { pet, bathe, earnMoney } = usePet();
   const { showToast } = useToast();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
-  const [message, setMessage] = useState('Esfregue o pet para dar banho! 🧽');
+  const [message, setMessage] = useState('Arraste a esponja para dar banho! 🧽');
   const [scrubCount, setScrubCount] = useState(0);
+  const [bubbles, setBubbles] = useState<Bubble[]>([]);
 
   const translateX = useSharedValue(0);
+  const spongeX = useSharedValue(0);
+  const spongeY = useSharedValue(0);
+  const isMoving = useSharedValue(false);
+  const bubbleIdCounter = React.useRef(0);
+  const timeoutRefs = React.useRef<Set<NodeJS.Timeout>>(new Set());
+  const lastBubbleTime = React.useRef(0);
 
   if (!pet) return null;
 
   const SCRUBS_NEEDED = 5;
+  const BUBBLE_VELOCITY_THRESHOLD = 100;
+  const BUBBLE_POSITION_VARIANCE = 40;
+  const BUBBLE_POSITION_OFFSET = 20;
+  const BUBBLE_THROTTLE_MS = 100; // Minimum time between bubble creation
+
+  const addBubble = (x: number, y: number) => {
+    const now = Date.now();
+    
+    // Throttle bubble creation to prevent performance issues
+    if (now - lastBubbleTime.current < BUBBLE_THROTTLE_MS) {
+      return;
+    }
+    
+    lastBubbleTime.current = now;
+    
+    const newBubble: Bubble = {
+      id: now + (bubbleIdCounter.current++),
+      x: x + Math.random() * BUBBLE_POSITION_VARIANCE - BUBBLE_POSITION_OFFSET,
+      y: y + Math.random() * BUBBLE_POSITION_VARIANCE - BUBBLE_POSITION_OFFSET,
+      scale: 0.5 + Math.random() * 0.5,
+    };
+    
+    setBubbles(prev => [...prev, newBubble]);
+    
+    // Remove bubble after animation
+    const timeoutId = setTimeout(() => {
+      setBubbles(prev => prev.filter(b => b.id !== newBubble.id));
+      timeoutRefs.current.delete(timeoutId);
+    }, 1500);
+    timeoutRefs.current.add(timeoutId);
+  };
+
+  // Cleanup timeouts on unmount
+  React.useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach(timeout => clearTimeout(timeout));
+      timeoutRefs.current.clear();
+    };
+  }, []);
 
   const handleScrub = () => {
     const newCount = scrubCount + 1;
@@ -57,7 +146,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
 
         setTimeout(() => {
           setAnimationState('idle');
-          setMessage('Esfregue o pet para dar banho! 🧽');
+          setMessage('Arraste a esponja para dar banho! 🧽');
         }, 2000);
       }, 1500);
     }
@@ -72,8 +161,36 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
       handleScrub();
     });
 
+  const spongeDragGesture = Gesture.Pan()
+    .onStart(() => {
+      isMoving.value = true;
+    })
+    .onUpdate((e) => {
+      spongeX.value = e.translationX;
+      spongeY.value = e.translationY;
+      
+      // Generate bubbles while moving
+      if (Math.abs(e.velocityX) > BUBBLE_VELOCITY_THRESHOLD || Math.abs(e.velocityY) > BUBBLE_VELOCITY_THRESHOLD) {
+        addBubble(e.absoluteX, e.absoluteY);
+      }
+    })
+    .onEnd(() => {
+      isMoving.value = false;
+      spongeX.value = withSpring(0);
+      spongeY.value = withSpring(0);
+      handleScrub();
+    });
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
+  }));
+
+  const spongeAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: spongeX.value },
+      { translateY: spongeY.value },
+      { scale: isMoving.value ? withSpring(1.1) : withSpring(1) },
+    ],
   }));
 
   return (
@@ -96,12 +213,20 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
         <Animated.View style={[styles.petContainer, animatedStyle]}>
           <PetRenderer pet={pet} animationState={animationState} size={420} />
 
-          {/* Bolhas decorativas */}
-          <View style={styles.bubbles}>
-            <Text style={styles.bubble}>🫧</Text>
-            <Text style={[styles.bubble, { left: 50, top: 20 }]}>🫧</Text>
-            <Text style={[styles.bubble, { right: 30, top: 40 }]}>🫧</Text>
-          </View>
+          {/* Dynamic Bubbles */}
+          {bubbles.map(bubble => (
+            <BubbleComponent key={bubble.id} bubble={bubble} />
+          ))}
+        </Animated.View>
+      </GestureDetector>
+
+      {/* Draggable Sponge */}
+      <GestureDetector gesture={spongeDragGesture}>
+        <Animated.View style={[styles.spongeContainer, spongeAnimatedStyle]}>
+          <Image
+            source={require('../../assets/sprites/sponge.png')}
+            style={styles.spongeImage}
+          />
         </Animated.View>
       </GestureDetector>
 
@@ -171,17 +296,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
-  bubbles: {
+  dynamicBubble: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    zIndex: 10,
   },
-  bubble: {
-    position: 'absolute',
+  bubbleEmoji: {
     fontSize: 32,
-    opacity: 0.7,
+  },
+  spongeContainer: {
+    position: 'absolute',
+    bottom: 200,
+    left: 40,
+    zIndex: 20,
+  },
+  spongeImage: {
+    width: 100,
+    height: 75,
+    resizeMode: 'contain',
   },
   messageContainer: {
     alignItems: 'center',
