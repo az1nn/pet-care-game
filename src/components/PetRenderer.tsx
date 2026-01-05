@@ -123,20 +123,25 @@ export const PetRenderer: React.FC<PetRendererProps> = ({
       )}
 
       {/* Dirt marks - show based on hygiene level */}
-      {Array.from({ length: dirtMarksCount }, (_, index) => (
-        <View
-          key={`dirt-${index}`}
-          style={[
-            styles.dirtMark,
-            {
-              left: dirtMarkPositions[index].left,
-              top: dirtMarkPositions[index].top,
-            },
-          ]}
-        >
-          <Text style={styles.dirtEmoji}>💩</Text>
-        </View>
-      ))}
+      {Array.from({ length: dirtMarksCount }, (_, index) => {
+        // Safeguard: ensure we don't exceed available positions
+        if (index >= dirtMarkPositions.length) return null;
+        
+        return (
+          <View
+            key={`dirt-${index}`}
+            style={[
+              styles.dirtMark,
+              {
+                left: dirtMarkPositions[index].left,
+                top: dirtMarkPositions[index].top,
+              },
+            ]}
+          >
+            <Text style={styles.dirtEmoji}>💩</Text>
+          </View>
+        );
+      })}
     </Animated.View>
   );
 };
@@ -155,7 +160,7 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   dirtEmoji: {
-    fontSize: 32,
+    fontSize: 32, // Relative to default pet size of 450px
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
