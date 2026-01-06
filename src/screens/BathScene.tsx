@@ -128,11 +128,15 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
     const newCount = scrubCount + 1;
     setScrubCount(newCount);
 
+    // Give 5% hygiene per scrub
+    bathe(5);
+
     if (newCount >= SCRUBS_NEEDED) {
       setAnimationState('bathing');
       setMessage(`${pet.name} está tomando banho! 🛁💦`);
 
-      bathe(30);
+      // Give bonus 10% hygiene at the end (5 scrubs x 5% + 10% bonus = 35% total)
+      bathe(10);
       
       // Earn money for bathing
       const moneyEarned = 8;
