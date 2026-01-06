@@ -13,7 +13,7 @@ export interface UseNavigationListResult<T> {
 
 /**
  * Custom hook for navigating through a list of items with next/previous functionality
- * @param items Array of items to navigate through
+ * @param items Array of items to navigate through (must not be empty)
  * @param initialIndex Optional starting index (default: 0)
  * @returns Navigation state and controls
  */
@@ -21,19 +21,26 @@ export function useNavigationList<T>(
   items: T[],
   initialIndex: number = 0
 ): UseNavigationListResult<T> {
+  if (items.length === 0) {
+    throw new Error('useNavigationList: items array cannot be empty');
+  }
+
   const [currentIndex, setCurrentIndex] = useState(
     Math.max(0, Math.min(initialIndex, items.length - 1))
   );
 
   const goToNext = useCallback(() => {
+    if (items.length === 0) return;
     setCurrentIndex((prev) => (prev + 1) % items.length);
   }, [items.length]);
 
   const goToPrevious = useCallback(() => {
+    if (items.length === 0) return;
     setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
   }, [items.length]);
 
   const setIndexDirectly = useCallback((index: number) => {
+    if (items.length === 0) return;
     const validIndex = Math.max(0, Math.min(index, items.length - 1));
     setCurrentIndex(validIndex);
   }, [items.length]);
