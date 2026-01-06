@@ -314,8 +314,8 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   spongeImage: {
-    width: 100,
-    height: 75,
+    width: 150,
+    height: 112,
     resizeMode: 'contain',
   },
   messageContainer: {
