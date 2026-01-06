@@ -5,6 +5,7 @@ export interface UseNavigationListResult<T> {
   currentIndex: number;
   goToNext: () => void;
   goToPrevious: () => void;
+  setIndex: (index: number) => void;
   hasNext: boolean;
   hasPrevious: boolean;
   totalItems: number;
@@ -32,14 +33,21 @@ export function useNavigationList<T>(
     setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
   }, [items.length]);
 
-  const hasNext = currentIndex < items.length - 1;
-  const hasPrevious = currentIndex > 0;
+  const setIndexDirectly = useCallback((index: number) => {
+    const validIndex = Math.max(0, Math.min(index, items.length - 1));
+    setCurrentIndex(validIndex);
+  }, [items.length]);
+
+  // For circular navigation, next/previous are always available when there's more than one item
+  const hasNext = items.length > 1;
+  const hasPrevious = items.length > 1;
 
   return {
     currentItem: items[currentIndex],
     currentIndex,
     goToNext,
     goToPrevious,
+    setIndex: setIndexDirectly,
     hasNext,
     hasPrevious,
     totalItems: items.length,

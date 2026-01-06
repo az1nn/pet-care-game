@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -27,28 +27,31 @@ const SLOTS: { key: ClothingSlot; label: string; emoji: string }[] = [
 
 export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
   const { pet, setClothing } = usePet();
-  const [selectedSlot, setSelectedSlot] = useState<ClothingSlot>('head');
   
   const {
     currentItem: currentSlot,
     currentIndex,
     goToNext,
     goToPrevious,
+    setIndex,
     totalItems,
   } = useNavigationList(SLOTS);
 
   if (!pet) return null;
 
+  const selectedSlot = currentSlot.key;
   const itemsForSlot = getItemsBySlot(selectedSlot);
 
   const handleSelectItem = (itemId: string | null) => {
     setClothing(selectedSlot, itemId);
   };
   
-  // Update selected slot when current slot changes
-  React.useEffect(() => {
-    setSelectedSlot(currentSlot.key);
-  }, [currentSlot]);
+  const handleSlotClick = (slotKey: ClothingSlot) => {
+    const slotIndex = SLOTS.findIndex(s => s.key === slotKey);
+    if (slotIndex !== -1) {
+      setIndex(slotIndex);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -98,7 +101,7 @@ export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
               styles.slotButton,
               selectedSlot === slot.key && styles.slotButtonSelected,
             ]}
-            onPress={() => setSelectedSlot(slot.key)}
+            onPress={() => handleSlotClick(slot.key)}
           >
             <Text style={styles.slotEmoji}>{slot.emoji}</Text>
             <Text style={styles.slotLabel}>{slot.label}</Text>
