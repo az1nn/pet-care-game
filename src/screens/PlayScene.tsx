@@ -11,6 +11,7 @@ import { usePet } from '../context/PetContext';
 import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { AnimationState } from '../types';
+import { useNavigationList } from '../hooks/useNavigationList';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -26,6 +27,14 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
   const { showToast } = useToast();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('');
+  
+  const {
+    currentItem: currentActivity,
+    currentIndex,
+    goToNext,
+    goToPrevious,
+    totalItems,
+  } = useNavigationList(PLAY_ACTIVITIES);
 
   if (!pet) return null;
 
@@ -67,6 +76,39 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
 
       <View style={styles.activitiesContainer}>
         <Text style={styles.activitiesTitle}>Escolha a atividade:</Text>
+        
+        {/* Navigation arrows and current activity display */}
+        <View style={styles.navigationContainer}>
+          <TouchableOpacity
+            style={styles.arrowButton}
+            onPress={goToPrevious}
+            disabled={animationState !== 'idle'}
+          >
+            <Text style={styles.arrowText}>←</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.currentActivityButton}
+            onPress={() => handlePlay(currentActivity)}
+            disabled={animationState !== 'idle'}
+          >
+            <Text style={styles.currentActivityEmoji}>{currentActivity.emoji}</Text>
+            <Text style={styles.currentActivityName}>{currentActivity.name}</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.arrowButton}
+            onPress={goToNext}
+            disabled={animationState !== 'idle'}
+          >
+            <Text style={styles.arrowText}>→</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <Text style={styles.pageIndicator}>
+          {currentIndex + 1} / {totalItems}
+        </Text>
+        
         <View style={styles.activitiesGrid}>
           {PLAY_ACTIVITIES.map((activity) => (
             <TouchableOpacity
@@ -130,6 +172,51 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  arrowButton: {
+    backgroundColor: '#b3e5fc',
+    borderRadius: 30,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  arrowText: {
+    fontSize: 28,
+    color: '#0288d1',
+    fontWeight: 'bold',
+  },
+  currentActivityButton: {
+    backgroundColor: '#81d4fa',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    minWidth: 140,
+    borderWidth: 3,
+    borderColor: '#0288d1',
+  },
+  currentActivityEmoji: {
+    fontSize: 48,
+    marginBottom: 8,
+  },
+  currentActivityName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  pageIndicator: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 16,
+    fontWeight: '600',
   },
   activitiesGrid: {
     flexDirection: 'row',

@@ -12,6 +12,7 @@ import { usePet } from '../context/PetContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { ClothingSlot } from '../types';
 import { CLOTHING_ITEMS, getItemsBySlot } from '../data/clothingItems';
+import { useNavigationList } from '../hooks/useNavigationList';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -27,6 +28,14 @@ const SLOTS: { key: ClothingSlot; label: string; emoji: string }[] = [
 export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
   const { pet, setClothing } = usePet();
   const [selectedSlot, setSelectedSlot] = useState<ClothingSlot>('head');
+  
+  const {
+    currentItem: currentSlot,
+    currentIndex,
+    goToNext,
+    goToPrevious,
+    totalItems,
+  } = useNavigationList(SLOTS);
 
   if (!pet) return null;
 
@@ -35,6 +44,11 @@ export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
   const handleSelectItem = (itemId: string | null) => {
     setClothing(selectedSlot, itemId);
   };
+  
+  // Update selected slot when current slot changes
+  React.useEffect(() => {
+    setSelectedSlot(currentSlot.key);
+  }, [currentSlot]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,6 +63,32 @@ export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
       <View style={styles.petContainer}>
         <PetRenderer pet={pet} size={300} />
       </View>
+
+      {/* Navigation arrows for slots */}
+      <View style={styles.navigationContainer}>
+        <TouchableOpacity
+          style={styles.arrowButton}
+          onPress={goToPrevious}
+        >
+          <Text style={styles.arrowText}>←</Text>
+        </TouchableOpacity>
+        
+        <View style={styles.currentSlotContainer}>
+          <Text style={styles.currentSlotEmoji}>{currentSlot.emoji}</Text>
+          <Text style={styles.currentSlotLabel}>{currentSlot.label}</Text>
+        </View>
+        
+        <TouchableOpacity
+          style={styles.arrowButton}
+          onPress={goToNext}
+        >
+          <Text style={styles.arrowText}>→</Text>
+        </TouchableOpacity>
+      </View>
+      
+      <Text style={styles.pageIndicator}>
+        {currentIndex + 1} / {totalItems}
+      </Text>
 
       <View style={styles.slotSelector}>
         {SLOTS.map((slot) => (
@@ -124,6 +164,52 @@ const styles = StyleSheet.create({
   petContainer: {
     alignItems: 'center',
     paddingVertical: 16,
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    marginHorizontal: 16,
+  },
+  arrowButton: {
+    backgroundColor: '#f8bbd9',
+    borderRadius: 30,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  arrowText: {
+    fontSize: 28,
+    color: '#c2185b',
+    fontWeight: 'bold',
+  },
+  currentSlotContainer: {
+    backgroundColor: '#f48fb1',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    minWidth: 120,
+    borderWidth: 3,
+    borderColor: '#c2185b',
+  },
+  currentSlotEmoji: {
+    fontSize: 40,
+    marginBottom: 4,
+  },
+  currentSlotLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  pageIndicator: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 8,
+    fontWeight: '600',
   },
   slotSelector: {
     flexDirection: 'row',

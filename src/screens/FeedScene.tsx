@@ -11,6 +11,7 @@ import { usePet } from '../context/PetContext';
 import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { AnimationState } from '../types';
+import { useNavigationList } from '../hooks/useNavigationList';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -28,6 +29,14 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
   const { showToast } = useToast();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('');
+  
+  const {
+    currentItem: currentFood,
+    currentIndex,
+    goToNext,
+    goToPrevious,
+    totalItems,
+  } = useNavigationList(FOODS);
 
   if (!pet) return null;
 
@@ -76,6 +85,40 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
 
       <View style={styles.foodContainer}>
         <Text style={styles.foodTitle}>Escolha a comida:</Text>
+        
+        {/* Navigation arrows and current food display */}
+        <View style={styles.navigationContainer}>
+          <TouchableOpacity
+            style={styles.arrowButton}
+            onPress={goToPrevious}
+            disabled={animationState !== 'idle'}
+          >
+            <Text style={styles.arrowText}>←</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.currentFoodButton}
+            onPress={() => handleFeed(currentFood)}
+            disabled={animationState !== 'idle' || pet.hunger >= 100}
+          >
+            <Text style={styles.currentFoodEmoji}>{currentFood.emoji}</Text>
+            <Text style={styles.currentFoodName}>{currentFood.name}</Text>
+            <Text style={styles.currentFoodValue}>+{currentFood.value}%</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.arrowButton}
+            onPress={goToNext}
+            disabled={animationState !== 'idle'}
+          >
+            <Text style={styles.arrowText}>→</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <Text style={styles.pageIndicator}>
+          {currentIndex + 1} / {totalItems}
+        </Text>
+        
         <View style={styles.foodGrid}>
           {FOODS.map((food) => (
             <TouchableOpacity
@@ -149,6 +192,57 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  arrowButton: {
+    backgroundColor: '#fff3e0',
+    borderRadius: 30,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  arrowText: {
+    fontSize: 28,
+    color: '#ff9800',
+    fontWeight: 'bold',
+  },
+  currentFoodButton: {
+    backgroundColor: '#ffe0b2',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    minWidth: 140,
+    borderWidth: 3,
+    borderColor: '#ff9800',
+  },
+  currentFoodEmoji: {
+    fontSize: 48,
+    marginBottom: 8,
+  },
+  currentFoodName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  currentFoodValue: {
+    fontSize: 14,
+    color: '#4CAF50',
+    fontWeight: '600',
+  },
+  pageIndicator: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 16,
+    fontWeight: '600',
   },
   foodGrid: {
     flexDirection: 'row',
