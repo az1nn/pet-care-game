@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,11 +8,11 @@ import {
   ScrollView,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons';
 import { usePet } from '../context/PetContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { ClothingSlot } from '../types';
 import { CLOTHING_ITEMS, getItemsBySlot } from '../data/clothingItems';
-import { useNavigationList } from '../hooks/useNavigationList';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -27,71 +27,30 @@ const SLOTS: { key: ClothingSlot; label: string; emoji: string }[] = [
 
 export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
   const { pet, setClothing } = usePet();
-  
-  const {
-    currentItem: currentSlot,
-    currentIndex,
-    goToNext,
-    goToPrevious,
-    setIndex,
-    totalItems,
-  } = useNavigationList(SLOTS);
+  const [selectedSlot, setSelectedSlot] = useState<ClothingSlot>('head');
 
   if (!pet) return null;
 
-  const selectedSlot = currentSlot.key;
   const itemsForSlot = getItemsBySlot(selectedSlot);
 
   const handleSelectItem = (itemId: string | null) => {
     setClothing(selectedSlot, itemId);
   };
-  
-  const handleSlotClick = (slotKey: ClothingSlot) => {
-    const slotIndex = SLOTS.findIndex(s => s.key === slotKey);
-    if (slotIndex !== -1) {
-      setIndex(slotIndex);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>← Voltar</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButtonContainer}>
+          <Ionicons name="arrow-back" size={24} color="#9b59b6" />
+          <Text style={styles.backButton}>Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>👕 Armário</Text>
-        <View style={{ width: 60 }} />
+        <View style={{ width: 80 }} />
       </View>
 
       <View style={styles.petContainer}>
         <PetRenderer pet={pet} size={300} />
       </View>
-
-      {/* Navigation arrows for slots */}
-      <View style={styles.navigationContainer}>
-        <TouchableOpacity
-          style={styles.arrowButton}
-          onPress={goToPrevious}
-        >
-          <Text style={styles.arrowText}>←</Text>
-        </TouchableOpacity>
-        
-        <View style={styles.currentSlotContainer}>
-          <Text style={styles.currentSlotEmoji}>{currentSlot.emoji}</Text>
-          <Text style={styles.currentSlotLabel}>{currentSlot.label}</Text>
-        </View>
-        
-        <TouchableOpacity
-          style={styles.arrowButton}
-          onPress={goToNext}
-        >
-          <Text style={styles.arrowText}>→</Text>
-        </TouchableOpacity>
-      </View>
-      
-      <Text style={styles.pageIndicator}>
-        {currentIndex + 1} / {totalItems}
-      </Text>
 
       <View style={styles.slotSelector}>
         {SLOTS.map((slot) => (
@@ -101,7 +60,7 @@ export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
               styles.slotButton,
               selectedSlot === slot.key && styles.slotButtonSelected,
             ]}
-            onPress={() => handleSlotClick(slot.key)}
+            onPress={() => setSelectedSlot(slot.key)}
           >
             <Text style={styles.slotEmoji}>{slot.emoji}</Text>
             <Text style={styles.slotLabel}>{slot.label}</Text>
@@ -154,6 +113,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
+  backButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
   backButton: {
     fontSize: 16,
     color: '#9b59b6',
@@ -167,52 +131,6 @@ const styles = StyleSheet.create({
   petContainer: {
     alignItems: 'center',
     paddingVertical: 16,
-  },
-  navigationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    marginHorizontal: 16,
-  },
-  arrowButton: {
-    backgroundColor: '#f8bbd9',
-    borderRadius: 30,
-    width: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 8,
-  },
-  arrowText: {
-    fontSize: 28,
-    color: '#c2185b',
-    fontWeight: 'bold',
-  },
-  currentSlotContainer: {
-    backgroundColor: '#f48fb1',
-    borderRadius: 16,
-    padding: 16,
-    alignItems: 'center',
-    minWidth: 120,
-    borderWidth: 3,
-    borderColor: '#c2185b',
-  },
-  currentSlotEmoji: {
-    fontSize: 40,
-    marginBottom: 4,
-  },
-  currentSlotLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  pageIndicator: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 8,
-    fontWeight: '600',
   },
   slotSelector: {
     flexDirection: 'row',

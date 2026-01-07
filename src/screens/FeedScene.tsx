@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons';
 import { usePet } from '../context/PetContext';
 import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
@@ -65,11 +66,12 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>← Voltar</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButtonContainer}>
+          <Ionicons name="arrow-back" size={24} color="#9b59b6" />
+          <Text style={styles.backButton}>Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🍖 Alimentar</Text>
-        <View style={{ width: 60 }} />
+        <View style={{ width: 80 }} />
       </View>
 
       <View style={styles.petContainer}>
@@ -118,21 +120,6 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
         <Text style={styles.pageIndicator}>
           {currentIndex + 1} / {totalItems}
         </Text>
-        
-        <View style={styles.foodGrid}>
-          {FOODS.map((food) => (
-            <TouchableOpacity
-              key={food.id}
-              style={styles.foodButton}
-              onPress={() => handleFeed(food)}
-              disabled={animationState !== 'idle' || pet.hunger >= 100}
-            >
-              <Text style={styles.foodEmoji}>{food.emoji}</Text>
-              <Text style={styles.foodName}>{food.name}</Text>
-              <Text style={styles.foodValue}>+{food.value}%</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
       </View>
     </SafeAreaView>
   );
@@ -148,6 +135,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
+  },
+  backButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   backButton: {
     fontSize: 16,
@@ -242,33 +234,6 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     marginBottom: 16,
-    fontWeight: '600',
-  },
-  foodGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  foodButton: {
-    backgroundColor: '#fff3e0',
-    borderRadius: 16,
-    padding: 16,
-    alignItems: 'center',
-    width: '45%',
-    marginBottom: 12,
-  },
-  foodEmoji: {
-    fontSize: 36,
-    marginBottom: 4,
-  },
-  foodName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-  },
-  foodValue: {
-    fontSize: 12,
-    color: '#4CAF50',
     fontWeight: '600',
   },
 });

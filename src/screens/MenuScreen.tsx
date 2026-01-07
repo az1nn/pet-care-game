@@ -68,14 +68,16 @@ export const MenuScreen: React.FC<Props> = ({ navigation }) => {
                         </TouchableOpacity>
                     )}
 
-                    <TouchableOpacity
-                        style={[styles.newPetButton, pet && styles.newPetButtonSecondary]}
-                        onPress={handleNewPet}
-                    >
-                        <Text style={[styles.newPetButtonText, pet && styles.newPetButtonTextSecondary]}>
-                            {pet ? 'Novo Pet' : 'Criar Novo Pet'} ✨
-                        </Text>
-                    </TouchableOpacity>
+                    {!pet && (
+                        <TouchableOpacity
+                            style={styles.newPetButton}
+                            onPress={handleNewPet}
+                        >
+                            <Text style={styles.newPetButtonText}>
+                                Criar Novo Pet ✨
+                            </Text>
+                        </TouchableOpacity>
+                    )}
 
                     {pet && (
                         <TouchableOpacity
@@ -170,19 +172,10 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         elevation: 5,
     },
-    newPetButtonSecondary: {
-        backgroundColor: '#fff',
-        borderWidth: 2,
-        borderColor: '#9b59b6',
-        shadowOpacity: 0.1,
-    },
     newPetButtonText: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    newPetButtonTextSecondary: {
-        color: '#9b59b6',
     },
     deletePetButton: {
         backgroundColor: '#fff',

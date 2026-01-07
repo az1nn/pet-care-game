@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons';
 import { usePet } from '../context/PetContext';
 import { PetType, PetColor, Gender } from '../types';
 
@@ -45,7 +46,8 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
         style={styles.backButton}
         onPress={() => navigation.navigate('Menu')}
       >
-        <Text style={styles.backButtonText}>← Voltar</Text>
+        <Ionicons name="arrow-back" size={24} color="#9b59b6" />
+        <Text style={styles.backButtonText}>Voltar</Text>
       </TouchableOpacity>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -155,6 +157,9 @@ const styles = StyleSheet.create({
   backButton: {
     padding: 16,
     paddingTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   backButtonText: {
     fontSize: 16,

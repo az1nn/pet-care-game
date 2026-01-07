@@ -8,6 +8,7 @@ import {
   Image,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -200,11 +201,12 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>← Voltar</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButtonContainer}>
+          <Ionicons name="arrow-back" size={24} color="#9b59b6" />
+          <Text style={styles.backButton}>Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🛁 Banho</Text>
-        <View style={{ width: 60 }} />
+        <View style={{ width: 80 }} />
       </View>
 
       <View style={styles.hygieneInfo}>
@@ -274,6 +276,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
+  },
+  backButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   backButton: {
     fontSize: 16,
