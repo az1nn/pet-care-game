@@ -10,9 +10,9 @@ import {
   Platform,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
 import { usePet } from '../context/PetContext';
 import { PetType, PetColor, Gender } from '../types';
+import { useBackButton } from '../hooks/useBackButton';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -24,6 +24,7 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
   const [petType, setPetType] = useState<PetType>('cat');
   const [gender, setGender] = useState<Gender>('female');
   const [color, setColor] = useState<PetColor>('base');
+  const BackButtonIcon = useBackButton();
 
   // Reset color when switching pet type if the color is not available for the new type
   const handlePetTypeChange = (newType: PetType) => {
@@ -46,7 +47,7 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
         style={styles.backButton}
         onPress={() => navigation.navigate('Menu')}
       >
-        <Ionicons name="arrow-back" size={24} color="#9b59b6" />
+        <BackButtonIcon />
         <Text style={styles.backButtonText}>Voltar</Text>
       </TouchableOpacity>
       <KeyboardAvoidingView

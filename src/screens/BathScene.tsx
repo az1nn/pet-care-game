@@ -8,7 +8,6 @@ import {
   Image,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -21,6 +20,7 @@ import { usePet } from '../context/PetContext';
 import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { AnimationState } from '../types';
+import { useBackButton } from '../hooks/useBackButton';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -73,6 +73,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
   const [message, setMessage] = useState('Arraste a esponja para dar banho! 🧽');
   const [scrubCount, setScrubCount] = useState(0);
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
+  const BackButtonIcon = useBackButton();
 
   const translateX = useSharedValue(0);
   const spongeX = useSharedValue(0);
@@ -202,7 +203,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButtonContainer}>
-          <Ionicons name="arrow-back" size={24} color="#9b59b6" />
+          <BackButtonIcon />
           <Text style={styles.backButton}>Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🛁 Banho</Text>

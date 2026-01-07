@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
 import { usePet } from '../context/PetContext';
 import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { AnimationState } from '../types';
 import { useNavigationList } from '../hooks/useNavigationList';
+import { useBackButton } from '../hooks/useBackButton';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -30,6 +30,7 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
   const { showToast } = useToast();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('');
+  const BackButtonIcon = useBackButton();
   
   const {
     currentItem: currentFood,
@@ -67,7 +68,7 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButtonContainer}>
-          <Ionicons name="arrow-back" size={24} color="#9b59b6" />
+          <BackButtonIcon />
           <Text style={styles.backButton}>Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🍖 Alimentar</Text>

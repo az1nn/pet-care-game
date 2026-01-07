@@ -8,11 +8,11 @@ import {
   ScrollView,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
 import { usePet } from '../context/PetContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { ClothingSlot } from '../types';
 import { CLOTHING_ITEMS, getItemsBySlot } from '../data/clothingItems';
+import { useBackButton } from '../hooks/useBackButton';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -28,6 +28,7 @@ const SLOTS: { key: ClothingSlot; label: string; emoji: string }[] = [
 export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
   const { pet, setClothing } = usePet();
   const [selectedSlot, setSelectedSlot] = useState<ClothingSlot>('head');
+  const BackButtonIcon = useBackButton();
 
   if (!pet) return null;
 
@@ -41,7 +42,7 @@ export const WardrobeScene: React.FC<Props> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButtonContainer}>
-          <Ionicons name="arrow-back" size={24} color="#9b59b6" />
+          <BackButtonIcon />
           <Text style={styles.backButton}>Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>👕 Armário</Text>
