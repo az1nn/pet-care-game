@@ -141,7 +141,6 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         width: '100%',
-        gap: 16,
     },
     continueButton: {
         backgroundColor: '#9b59b6',
@@ -154,6 +153,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 5,
+        marginBottom: 16,
     },
     continueButtonText: {
         color: '#fff',
@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 5,
+        marginBottom: 16,
     },
     newPetButtonText: {
         color: '#fff',

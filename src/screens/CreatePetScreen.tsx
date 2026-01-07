@@ -159,12 +159,12 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
   },
   backButtonText: {
     fontSize: 16,
     color: '#9b59b6',
     fontWeight: '600',
+    marginLeft: 4,
   },
   content: {
     flex: 1,
@@ -188,13 +188,11 @@ const styles = StyleSheet.create({
   optionRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 16,
   },
   colorContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    gap: 12,
   },
   optionButton: {
     backgroundColor: '#fff',
@@ -204,6 +202,7 @@ const styles = StyleSheet.create({
     minWidth: 120,
     borderWidth: 3,
     borderColor: 'transparent',
+    marginHorizontal: 8,
   },
   optionSelected: {
     borderColor: '#9b59b6',

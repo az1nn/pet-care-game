@@ -129,12 +129,12 @@ const styles = StyleSheet.create({
   backButtonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
   },
   backButton: {
     fontSize: 16,
     color: '#9b59b6',
     fontWeight: '600',
+    marginLeft: 4,
   },
   title: {
     fontSize: 24,
