@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     marginHorizontal: 4,
+    marginVertical: 6,
     borderWidth: 2,
     borderColor: 'transparent',
   },
