@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, ImageRequireSource } from 'react-native';
+import { Image, StyleSheet, ImageRequireSource, View, Text } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   withRepeat,
@@ -26,6 +26,9 @@ const BASE_ASSETS: Record<PetType, Record<PetColor, ImageRequireSource>> = {
     whiteandbrown: require('../../assets/sprites/dogs/dog_whiteandbrowm.jpg'),
   },
 };
+
+// Dirt mark size ratio relative to pet size
+const DIRT_MARK_SIZE_RATIO = 0.071;
 
 type PetRendererProps = {
   pet: Pet;
@@ -62,6 +65,27 @@ export const PetRenderer: React.FC<PetRendererProps> = ({
     const item = CLOTHING_ITEMS.find((i) => i.id === itemId);
     return item?.asset || null; // troque por require real quando tiver o asset
   };
+
+  // Calculate number of dirt marks based on hygiene (one mark per 20% decrease)
+  const getDirtMarksCount = () => {
+    if (pet.hygiene > 80) return 0;
+    if (pet.hygiene > 60) return 1;
+    if (pet.hygiene > 40) return 2;
+    if (pet.hygiene > 20) return 3;
+    if (pet.hygiene > 0) return 4;
+    return 5;
+  };
+
+  const dirtMarksCount = getDirtMarksCount();
+
+  // Dirt mark positions (relative to pet size)
+  const dirtMarkPositions = [
+    { left: '25%', top: '40%' }, // Position 1
+    { left: '65%', top: '35%' }, // Position 2
+    { left: '45%', top: '60%' }, // Position 3
+    { left: '20%', top: '70%' }, // Position 4
+    { left: '70%', top: '65%' }, // Position 5
+  ];
 
   return (
     <Animated.View style={[styles.container, { width: size, height: size }, animatedStyle]}>
@@ -104,6 +128,22 @@ export const PetRenderer: React.FC<PetRendererProps> = ({
           resizeMode="contain"
         />
       )}
+
+      {/* Dirt marks - show based on hygiene level */}
+      {Array.from({ length: Math.min(dirtMarksCount, dirtMarkPositions.length) }, (_, index) => (
+        <View
+          key={`dirt-${index}`}
+          style={[
+            styles.dirtMark,
+            {
+              left: dirtMarkPositions[index].left,
+              top: dirtMarkPositions[index].top,
+            },
+          ]}
+        >
+          <Text style={[styles.dirtEmoji, { fontSize: size * DIRT_MARK_SIZE_RATIO }]}>💩</Text>
+        </View>
+      ))}
     </Animated.View>
   );
 };
@@ -116,5 +156,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
+  },
+  dirtMark: {
+    position: 'absolute',
+    zIndex: 100,
+  },
+  dirtEmoji: {
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
 });
