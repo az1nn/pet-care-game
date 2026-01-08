@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 
 import { PetProvider, usePet } from './src/context/PetContext';
+import { ToastProvider } from './src/context/ToastContext';
 import { MenuScreen } from './src/screens/MenuScreen';
 import { CreatePetScreen } from './src/screens/CreatePetScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
@@ -12,6 +13,7 @@ import { FeedScene } from './src/screens/FeedScene';
 import { BathScene } from './src/screens/BathScene';
 import { WardrobeScene } from './src/screens/WardrobeScene';
 import { PlayScene } from './src/screens/PlayScene';
+import { BackgroundScene } from './src/screens/BackgroundScene';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +43,7 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen name="Bath" component={BathScene} />
       <Stack.Screen name="Wardrobe" component={WardrobeScene} />
       <Stack.Screen name="Play" component={PlayScene} />
+      <Stack.Screen name="Background" component={BackgroundScene} />
     </Stack.Navigator>
   );
 };
@@ -49,9 +52,11 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PetProvider>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
+        <ToastProvider>
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+        </ToastProvider>
       </PetProvider>
     </GestureHandlerRootView>
   );
