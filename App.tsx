@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 
 import { PetProvider, usePet } from './src/context/PetContext';
+import { ToastProvider } from './src/context/ToastContext';
 import { MenuScreen } from './src/screens/MenuScreen';
 import { CreatePetScreen } from './src/screens/CreatePetScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
@@ -49,9 +50,11 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PetProvider>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
+        <ToastProvider>
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+        </ToastProvider>
       </PetProvider>
     </GestureHandlerRootView>
   );
@@ -61,7 +64,7 @@ const styles = StyleSheet.create({
   loading: {
     flex: 1,
     justifyContent: 'center',
-    alignItems:  'center',
+    alignItems: 'center',
     backgroundColor: '#f5f0ff',
   },
 });
