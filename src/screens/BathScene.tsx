@@ -246,23 +246,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
         )}
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[
-            styles.bathButton,
-            (animationState !== 'idle' || pet.hygiene >= 100) &&
-              styles.bathButtonDisabled,
-          ]}
-          onPress={() => {
-            for (let i = 0; i < SCRUBS_NEEDED; i++) {
-              setTimeout(() => handleScrub(), i * 200);
-            }
-          }}
-          disabled={animationState !== 'idle' || pet.hygiene >= 100}
-        >
-          <Text style={styles.bathButtonText}>🛁 Dar Banho Completo</Text>
-        </TouchableOpacity>
-      </View>
+
     </SafeAreaView>
   );
 };
@@ -341,21 +325,5 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 8,
   },
-  buttonContainer: {
-    padding: 24,
-  },
-  bathButton: {
-    backgroundColor: '#2196F3',
-    borderRadius: 16,
-    padding: 18,
-    alignItems: 'center',
-  },
-  bathButtonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  bathButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+
 });
