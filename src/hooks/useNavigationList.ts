@@ -1,0 +1,62 @@
+import { useState, useCallback } from 'react';
+
+export interface UseNavigationListResult<T> {
+  currentItem: T;
+  currentIndex: number;
+  goToNext: () => void;
+  goToPrevious: () => void;
+  setIndex: (index: number) => void;
+  hasNext: boolean;
+  hasPrevious: boolean;
+  totalItems: number;
+}
+
+/**
+ * Custom hook for navigating through a list of items with next/previous functionality
+ * @param items Array of items to navigate through (must not be empty)
+ * @param initialIndex Optional starting index (default: 0)
+ * @returns Navigation state and controls
+ */
+export function useNavigationList<T>(
+  items: T[],
+  initialIndex: number = 0
+): UseNavigationListResult<T> {
+  if (items.length === 0) {
+    throw new Error('useNavigationList: items array cannot be empty');
+  }
+
+  const [currentIndex, setCurrentIndex] = useState(
+    Math.max(0, Math.min(initialIndex, items.length - 1))
+  );
+
+  const goToNext = useCallback(() => {
+    if (items.length === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % items.length);
+  }, [items]);
+
+  const goToPrevious = useCallback(() => {
+    if (items.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
+  }, [items]);
+
+  const setIndexDirectly = useCallback((index: number) => {
+    if (items.length === 0) return;
+    const validIndex = Math.max(0, Math.min(index, items.length - 1));
+    setCurrentIndex(validIndex);
+  }, [items]);
+
+  // For circular navigation, next/previous are always available when there's more than one item
+  const hasNext = items.length > 1;
+  const hasPrevious = items.length > 1;
+
+  return {
+    currentItem: items[currentIndex],
+    currentIndex,
+    goToNext,
+    goToPrevious,
+    setIndex: setIndexDirectly,
+    hasNext,
+    hasPrevious,
+    totalItems: items.length,
+  };
+}

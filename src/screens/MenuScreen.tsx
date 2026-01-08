@@ -68,14 +68,16 @@ export const MenuScreen: React.FC<Props> = ({ navigation }) => {
                         </TouchableOpacity>
                     )}
 
-                    <TouchableOpacity
-                        style={[styles.newPetButton, pet && styles.newPetButtonSecondary]}
-                        onPress={handleNewPet}
-                    >
-                        <Text style={[styles.newPetButtonText, pet && styles.newPetButtonTextSecondary]}>
-                            {pet ? 'Novo Pet' : 'Criar Novo Pet'} ✨
-                        </Text>
-                    </TouchableOpacity>
+                    {!pet && (
+                        <TouchableOpacity
+                            style={styles.newPetButton}
+                            onPress={handleNewPet}
+                        >
+                            <Text style={styles.newPetButtonText}>
+                                Criar Novo Pet ✨
+                            </Text>
+                        </TouchableOpacity>
+                    )}
 
                     {pet && (
                         <TouchableOpacity
@@ -139,7 +141,6 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         width: '100%',
-        gap: 16,
     },
     continueButton: {
         backgroundColor: '#9b59b6',
@@ -152,6 +153,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 5,
+        marginBottom: 16,
     },
     continueButtonText: {
         color: '#fff',
@@ -169,20 +171,12 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 5,
-    },
-    newPetButtonSecondary: {
-        backgroundColor: '#fff',
-        borderWidth: 2,
-        borderColor: '#9b59b6',
-        shadowOpacity: 0.1,
+        marginBottom: 16,
     },
     newPetButtonText: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    newPetButtonTextSecondary: {
-        color: '#9b59b6',
     },
     deletePetButton: {
         backgroundColor: '#fff',

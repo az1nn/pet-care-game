@@ -20,6 +20,7 @@ import { usePet } from '../context/PetContext';
 import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { AnimationState } from '../types';
+import { useBackButton } from '../hooks/useBackButton';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -72,6 +73,7 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
   const [message, setMessage] = useState('Arraste a esponja para dar banho! 🧽');
   const [scrubCount, setScrubCount] = useState(0);
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
+  const BackButtonIcon = useBackButton();
 
   const translateX = useSharedValue(0);
   const spongeX = useSharedValue(0);
@@ -200,11 +202,12 @@ export const BathScene: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>← Voltar</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButtonContainer}>
+          <BackButtonIcon />
+          <Text style={styles.backButton}>Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🛁 Banho</Text>
-        <View style={{ width: 60 }} />
+        <View style={{ width: 80 }} />
       </View>
 
       <View style={styles.hygieneInfo}>
@@ -275,10 +278,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
+  backButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   backButton: {
     fontSize: 16,
     color: '#9b59b6',
     fontWeight: '600',
+    marginLeft: 4,
   },
   title: {
     fontSize: 24,

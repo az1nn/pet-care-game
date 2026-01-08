@@ -11,6 +11,8 @@ import { usePet } from '../context/PetContext';
 import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { AnimationState } from '../types';
+import { useNavigationList } from '../hooks/useNavigationList';
+import { useBackButton } from '../hooks/useBackButton';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -26,6 +28,15 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
   const { showToast } = useToast();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('');
+  const BackButtonIcon = useBackButton();
+  
+  const {
+    currentItem: currentActivity,
+    currentIndex,
+    goToNext,
+    goToPrevious,
+    totalItems,
+  } = useNavigationList(PLAY_ACTIVITIES);
 
   if (!pet) return null;
 
@@ -53,11 +64,12 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>← Voltar</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButtonContainer}>
+          <BackButtonIcon />
+          <Text style={styles.backButton}>Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🎮 Brincar</Text>
-        <View style={{ width: 60 }} />
+        <View style={{ width: 80 }} />
       </View>
 
       <View style={styles.petContainer}>
@@ -67,19 +79,38 @@ export const PlayScene: React.FC<Props> = ({ navigation }) => {
 
       <View style={styles.activitiesContainer}>
         <Text style={styles.activitiesTitle}>Escolha a atividade:</Text>
-        <View style={styles.activitiesGrid}>
-          {PLAY_ACTIVITIES.map((activity) => (
-            <TouchableOpacity
-              key={activity.id}
-              style={styles.activityButton}
-              onPress={() => handlePlay(activity)}
-              disabled={animationState !== 'idle'}
-            >
-              <Text style={styles.activityEmoji}>{activity.emoji}</Text>
-              <Text style={styles.activityName}>{activity.name}</Text>
-            </TouchableOpacity>
-          ))}
+        
+        {/* Navigation arrows and current activity display */}
+        <View style={styles.navigationContainer}>
+          <TouchableOpacity
+            style={styles.arrowButton}
+            onPress={goToPrevious}
+            disabled={animationState !== 'idle'}
+          >
+            <Text style={styles.arrowText}>←</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.currentActivityButton}
+            onPress={() => handlePlay(currentActivity)}
+            disabled={animationState !== 'idle'}
+          >
+            <Text style={styles.currentActivityEmoji}>{currentActivity.emoji}</Text>
+            <Text style={styles.currentActivityName}>{currentActivity.name}</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.arrowButton}
+            onPress={goToNext}
+            disabled={animationState !== 'idle'}
+          >
+            <Text style={styles.arrowText}>→</Text>
+          </TouchableOpacity>
         </View>
+        
+        <Text style={styles.pageIndicator}>
+          {currentIndex + 1} / {totalItems}
+        </Text>
       </View>
     </SafeAreaView>
   );
@@ -96,10 +127,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
+  backButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   backButton: {
     fontSize: 16,
     color: '#9b59b6',
     fontWeight: '600',
+    marginLeft: 4,
   },
   title: {
     fontSize: 24,
@@ -131,26 +167,49 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
-  activitiesGrid: {
+  navigationContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  activityButton: {
-    backgroundColor: '#b3e5fc',
-    borderRadius: 16,
-    padding: 16,
     alignItems: 'center',
-    width: '45%',
+    justifyContent: 'center',
     marginBottom: 12,
   },
-  activityEmoji: {
-    fontSize: 36,
-    marginBottom: 4,
+  arrowButton: {
+    backgroundColor: '#b3e5fc',
+    borderRadius: 30,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
   },
-  activityName: {
-    fontSize: 14,
-    fontWeight: '600',
+  arrowText: {
+    fontSize: 28,
+    color: '#0288d1',
+    fontWeight: 'bold',
+  },
+  currentActivityButton: {
+    backgroundColor: '#81d4fa',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    minWidth: 140,
+    borderWidth: 3,
+    borderColor: '#0288d1',
+  },
+  currentActivityEmoji: {
+    fontSize: 48,
+    marginBottom: 8,
+  },
+  currentActivityName: {
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#333',
+  },
+  pageIndicator: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 16,
+    fontWeight: '600',
   },
 });

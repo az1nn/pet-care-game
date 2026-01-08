@@ -11,6 +11,8 @@ import { usePet } from '../context/PetContext';
 import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
 import { AnimationState } from '../types';
+import { useNavigationList } from '../hooks/useNavigationList';
+import { useBackButton } from '../hooks/useBackButton';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -28,6 +30,15 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
   const { showToast } = useToast();
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [message, setMessage] = useState('');
+  const BackButtonIcon = useBackButton();
+  
+  const {
+    currentItem: currentFood,
+    currentIndex,
+    goToNext,
+    goToPrevious,
+    totalItems,
+  } = useNavigationList(FOODS);
 
   if (!pet) return null;
 
@@ -56,11 +67,12 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>← Voltar</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButtonContainer}>
+          <BackButtonIcon />
+          <Text style={styles.backButton}>Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>🍖 Alimentar</Text>
-        <View style={{ width: 60 }} />
+        <View style={{ width: 80 }} />
       </View>
 
       <View style={styles.petContainer}>
@@ -76,20 +88,39 @@ export const FeedScene: React.FC<Props> = ({ navigation }) => {
 
       <View style={styles.foodContainer}>
         <Text style={styles.foodTitle}>Escolha a comida:</Text>
-        <View style={styles.foodGrid}>
-          {FOODS.map((food) => (
-            <TouchableOpacity
-              key={food.id}
-              style={styles.foodButton}
-              onPress={() => handleFeed(food)}
-              disabled={animationState !== 'idle' || pet.hunger >= 100}
-            >
-              <Text style={styles.foodEmoji}>{food.emoji}</Text>
-              <Text style={styles.foodName}>{food.name}</Text>
-              <Text style={styles.foodValue}>+{food.value}%</Text>
-            </TouchableOpacity>
-          ))}
+        
+        {/* Navigation arrows and current food display */}
+        <View style={styles.navigationContainer}>
+          <TouchableOpacity
+            style={styles.arrowButton}
+            onPress={goToPrevious}
+            disabled={animationState !== 'idle'}
+          >
+            <Text style={styles.arrowText}>←</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.currentFoodButton}
+            onPress={() => handleFeed(currentFood)}
+            disabled={animationState !== 'idle' || pet.hunger >= 100}
+          >
+            <Text style={styles.currentFoodEmoji}>{currentFood.emoji}</Text>
+            <Text style={styles.currentFoodName}>{currentFood.name}</Text>
+            <Text style={styles.currentFoodValue}>+{currentFood.value}%</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.arrowButton}
+            onPress={goToNext}
+            disabled={animationState !== 'idle'}
+          >
+            <Text style={styles.arrowText}>→</Text>
+          </TouchableOpacity>
         </View>
+        
+        <Text style={styles.pageIndicator}>
+          {currentIndex + 1} / {totalItems}
+        </Text>
       </View>
     </SafeAreaView>
   );
@@ -106,10 +137,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
+  backButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   backButton: {
     fontSize: 16,
     color: '#9b59b6',
     fontWeight: '600',
+    marginLeft: 4,
   },
   title: {
     fontSize: 24,
@@ -150,31 +186,55 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
-  foodGrid: {
+  navigationContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  foodButton: {
-    backgroundColor: '#fff3e0',
-    borderRadius: 16,
-    padding: 16,
     alignItems: 'center',
-    width: '45%',
+    justifyContent: 'center',
     marginBottom: 12,
   },
-  foodEmoji: {
-    fontSize: 36,
+  arrowButton: {
+    backgroundColor: '#fff3e0',
+    borderRadius: 30,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  arrowText: {
+    fontSize: 28,
+    color: '#ff9800',
+    fontWeight: 'bold',
+  },
+  currentFoodButton: {
+    backgroundColor: '#ffe0b2',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    minWidth: 140,
+    borderWidth: 3,
+    borderColor: '#ff9800',
+  },
+  currentFoodEmoji: {
+    fontSize: 48,
+    marginBottom: 8,
+  },
+  currentFoodName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
     marginBottom: 4,
   },
-  foodName: {
+  currentFoodValue: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-  },
-  foodValue: {
-    fontSize: 12,
     color: '#4CAF50',
+    fontWeight: '600',
+  },
+  pageIndicator: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 16,
     fontWeight: '600',
   },
 });

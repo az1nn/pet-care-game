@@ -12,6 +12,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { usePet } from '../context/PetContext';
 import { PetType, PetColor, Gender } from '../types';
+import { useBackButton } from '../hooks/useBackButton';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -23,6 +24,7 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
   const [petType, setPetType] = useState<PetType>('cat');
   const [gender, setGender] = useState<Gender>('female');
   const [color, setColor] = useState<PetColor>('base');
+  const BackButtonIcon = useBackButton();
 
   // Reset color when switching pet type if the color is not available for the new type
   const handlePetTypeChange = (newType: PetType) => {
@@ -45,7 +47,8 @@ export const CreatePetScreen: React.FC<Props> = ({ navigation }) => {
         style={styles.backButton}
         onPress={() => navigation.navigate('Menu')}
       >
-        <Text style={styles.backButtonText}>← Voltar</Text>
+        <BackButtonIcon />
+        <Text style={styles.backButtonText}>Voltar</Text>
       </TouchableOpacity>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -155,11 +158,14 @@ const styles = StyleSheet.create({
   backButton: {
     padding: 16,
     paddingTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   backButtonText: {
     fontSize: 16,
     color: '#9b59b6',
     fontWeight: '600',
+    marginLeft: 4,
   },
   content: {
     flex: 1,
@@ -183,13 +189,11 @@ const styles = StyleSheet.create({
   optionRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 16,
   },
   colorContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    gap: 12,
   },
   optionButton: {
     backgroundColor: '#fff',
@@ -199,6 +203,7 @@ const styles = StyleSheet.create({
     minWidth: 120,
     borderWidth: 3,
     borderColor: 'transparent',
+    marginHorizontal: 8,
   },
   optionSelected: {
     borderColor: '#9b59b6',
@@ -239,6 +244,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     marginHorizontal: 4,
+    marginVertical: 6,
     borderWidth: 2,
     borderColor: 'transparent',
   },
