@@ -99,6 +99,11 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
           onPress={() => navigation.navigate('Play')}
         />
         <IconButton
+          emoji="🖼️"
+          label="Cenário"
+          onPress={() => navigation.navigate('Background')}
+        />
+        <IconButton
           emoji="🏠"
           label="Menu"
           onPress={handleMenuPress}

@@ -13,6 +13,7 @@ import { FeedScene } from './screens/FeedScene';
 import { BathScene } from './screens/BathScene';
 import { WardrobeScene } from './screens/WardrobeScene';
 import { PlayScene } from './screens/PlayScene';
+import { BackgroundScene } from './screens/BackgroundScene';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,7 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen name="Bath" component={BathScene} />
       <Stack.Screen name="Wardrobe" component={WardrobeScene} />
       <Stack.Screen name="Play" component={PlayScene} />
+      <Stack.Screen name="Background" component={BackgroundScene} />
     </Stack.Navigator>
   );
 };
