@@ -20,6 +20,7 @@ export type Pet = {
   hygiene: number; // 0-100
   money: number; // currency earned
   clothes: Record<ClothingSlot, string | null>;
+  background: string | null; // selected background image
   createdAt: number;
 };
 

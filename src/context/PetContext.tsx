@@ -12,6 +12,7 @@ type PetContextType = {
   play: () => void;
   bathe: (amount?: number) => void;
   setClothing: (slot: ClothingSlot, itemId: string | null) => void;
+  setBackground: (backgroundId: string | null) => void;
   removePet: () => Promise<void>;
   earnMoney: (amount: number) => void;
 };
@@ -65,6 +66,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         torso: null,
         paws: null,
       },
+      background: null,
       createdAt: Date.now(),
     };
     setPet(newPet);
@@ -127,6 +129,19 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     });
   };
 
+  const setBackground = (backgroundId: string | null) => {
+    setPet((currentPet) => {
+      if (!currentPet) return currentPet;
+      
+      const updatedPet: Pet = {
+        ...currentPet,
+        background: backgroundId,
+      };
+      savePet(updatedPet).catch(console.error);
+      return updatedPet;
+    });
+  };
+
   const removePet = async () => {
     await deletePet();
     setPet(null);
@@ -155,6 +170,7 @@ export const PetProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         play,
         bathe,
         setClothing,
+        setBackground,
         removePet,
         earnMoney,
       }}
