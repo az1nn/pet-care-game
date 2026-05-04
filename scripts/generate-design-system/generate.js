@@ -3,17 +3,20 @@
 /**
  * Design System Generator
  *
- * Generates HTML, PPTX, and PDF exports of the Lilly's Box design system.
+ * Generates HTML, PPTX, PDF, and Figma design tokens from the Lilly's Box
+ * design system.
  *
  * Usage:
  *   node generate.js
  *   node generate.js --output=<dir>   (default: ../../docs/design-system/exports)
  *   node generate.js --no-pdf         (skip PDF, avoids puppeteer Chromium download)
+ *   node generate.js --no-figma       (skip Figma tokens JSON)
  *
  * Output files:
- *   design-system.html   – standalone HTML reference (no external deps)
- *   design-system.pptx   – PowerPoint presentation
- *   design-system.pdf    – PDF generated from the HTML (requires puppeteer)
+ *   design-system.html          – standalone HTML reference (no external deps)
+ *   design-system.pptx          – PowerPoint presentation
+ *   design-system.pdf           – PDF generated from the HTML (requires puppeteer)
+ *   design-system.tokens.json   – W3C Design Tokens for Figma (Tokens Studio plugin)
  */
 
 'use strict';
@@ -22,10 +25,11 @@ const fs   = require('fs');
 const path = require('path');
 
 // ─── CLI args ─────────────────────────────────────────────────────────────────
-const args       = process.argv.slice(2);
-const skipPdf    = args.includes('--no-pdf');
-const outputArg  = args.find(a => a.startsWith('--output='));
-const OUTPUT_DIR = outputArg
+const args        = process.argv.slice(2);
+const skipPdf     = args.includes('--no-pdf');
+const skipFigma   = args.includes('--no-figma');
+const outputArg   = args.find(a => a.startsWith('--output='));
+const OUTPUT_DIR  = outputArg
   ? path.resolve(outputArg.split('=')[1])
   : path.resolve(__dirname, '../../docs/design-system/exports');
 
@@ -1043,15 +1047,75 @@ async function buildPdf(htmlPath, pdfPath) {
   }
 }
 
+// ─── Figma Design Tokens Generator ──────────────────────────────────────────
+//
+// Produces a W3C Design Tokens Community Group (DTCG) JSON file.
+// Import into Figma via the "Tokens Studio for Figma" plugin
+// (https://tokens.studio/).
+//
+// Format reference: https://tr.designtokens.org/format/
+
+function buildFigmaTokens() {
+  const out = {};
+
+  // Helper: write a token under a dotted path such as 'color.brand.primary'
+  const set = (group, name, value, type, description) => {
+    if (!out[group]) out[group] = {};
+    // Flatten group key into Tokens Studio top-level set structure
+    out[group][name] = { $value: value, $type: type, $description: description };
+  };
+
+  // ── Colors ──────────────────────────────────────────────────────────────────
+  Object.entries(COLORS).forEach(([group, items]) => {
+    items.forEach(({ name, hex, usage }) => {
+      set(`color.${group}`, name, hex, 'color', usage);
+    });
+  });
+
+  // ── Typography – font sizes ─────────────────────────────────────────────────
+  TYPOGRAPHY.sizes.forEach(({ token, px, usage }) => {
+    set('typography.fontSize', token, `${px}px`, 'dimension', usage);
+  });
+
+  // ── Typography – font weights ──────────────────────────────────────────────
+  TYPOGRAPHY.weights.forEach(({ token, value }) => {
+    set('typography.fontWeight', token, value, 'fontWeight', `Font weight ${value}`);
+  });
+
+  // ── Spacing ─────────────────────────────────────────────────────────────────
+  SPACING.forEach(({ token, px, usage }) => {
+    set('spacing', token, `${px}px`, 'dimension', usage);
+  });
+
+  // ── Border radius ──────────────────────────────────────────────────────────
+  BORDER_RADIUS.forEach(({ token, px, usage }) => {
+    set('borderRadius', token, `${px}px`, 'borderRadius', usage);
+  });
+
+  // ── Shadows ─────────────────────────────────────────────────────────────────
+  SHADOWS.forEach(({ token, css, usage }) => {
+    set('shadow', token, css, 'boxShadow', usage);
+  });
+
+  // ── Screen background aliases ───────────────────────────────────────────────
+  SCREENS.forEach(({ name, bg, theme }) => {
+    const key = name.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
+    set('color.screen', key, bg, 'color', `${name} – ${theme}`);
+  });
+
+  return JSON.stringify(out, null, 2);
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
   // Ensure output directory exists
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
-  const htmlPath = path.join(OUTPUT_DIR, 'design-system.html');
-  const pptxPath = path.join(OUTPUT_DIR, 'design-system.pptx');
-  const pdfPath  = path.join(OUTPUT_DIR, 'design-system.pdf');
+  const htmlPath   = path.join(OUTPUT_DIR, 'design-system.html');
+  const pptxPath   = path.join(OUTPUT_DIR, 'design-system.pptx');
+  const pdfPath    = path.join(OUTPUT_DIR, 'design-system.pdf');
+  const figmaPath  = path.join(OUTPUT_DIR, 'design-system.tokens.json');
 
   // 1. HTML
   console.log('📝  Generating HTML…');
@@ -1077,10 +1141,40 @@ async function main() {
     }
   }
 
+  // 4. Figma tokens
+  if (skipFigma) {
+    console.log('⏭️   Skipping Figma tokens (--no-figma flag).');
+  } else {
+    console.log('🎨  Generating Figma tokens (W3C DTCG)…');
+    fs.writeFileSync(figmaPath, buildFigmaTokens(), 'utf8');
+    console.log(`    → ${figmaPath}`);
+    console.log('    Import into Figma via: Tokens Studio for Figma plugin → Load from file');
+  }
+
   console.log('\n✅  Done!');
 }
 
-main().catch(err => {
-  console.error('❌  Export failed:', err);
-  process.exit(1);
-});
+// ─── Exports (for testing) ────────────────────────────────────────────────────
+
+module.exports = {
+  COLORS,
+  TYPOGRAPHY,
+  SPACING,
+  BORDER_RADIUS,
+  SHADOWS,
+  SCREENS,
+  COMPONENTS,
+  isDark,
+  strip,
+  buildHtml,
+  buildFigmaTokens,
+};
+
+// ─── Entry point ──────────────────────────────────────────────────────────────
+
+if (require.main === module) {
+  main().catch(err => {
+    console.error('❌  Export failed:', err);
+    process.exit(1);
+  });
+}

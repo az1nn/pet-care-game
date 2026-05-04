@@ -5,7 +5,8 @@
   "scripts": {
     "prepare": "husky",
     "design-system:export": "cd scripts/generate-design-system && npm install && node generate.js",
-    "design-system:export:no-pdf": "cd scripts/generate-design-system && npm install && node generate.js --no-pdf"
+    "design-system:export:no-pdf": "cd scripts/generate-design-system && npm install && node generate.js --no-pdf",
+    "design-system:test": "cd scripts/generate-design-system && npm install && npm test"
   },
   "devDependencies": {
     "husky": "^9.1.7",

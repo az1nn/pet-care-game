@@ -1,10 +1,12 @@
 {
   "name": "design-system-generator",
   "version": "1.0.0",
-  "description": "Generates PDF and PPTX exports of the Lilly's Box design system",
+  "description": "Generates HTML, PPTX, PDF and Figma design tokens from the Lilly's Box design system",
   "main": "generate.js",
   "scripts": {
-    "generate": "node generate.js"
+    "generate": "node generate.js",
+    "generate:no-pdf": "node generate.js --no-pdf",
+    "test": "node generate.test.js"
   },
   "dependencies": {
     "pptxgenjs": "3.12.0",
