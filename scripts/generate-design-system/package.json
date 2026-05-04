@@ -1,0 +1,13 @@
+{
+  "name": "design-system-generator",
+  "version": "1.0.0",
+  "description": "Generates PDF and PPTX exports of the Lilly's Box design system",
+  "main": "generate.js",
+  "scripts": {
+    "generate": "node generate.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "3.12.0",
+    "puppeteer": "22.15.0"
+  }
+}

@@ -3,7 +3,9 @@
   "private": true,
   "packageManager": "pnpm@10.32.1",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "design-system:export": "cd scripts/generate-design-system && npm install && node generate.js",
+    "design-system:export:no-pdf": "cd scripts/generate-design-system && npm install && node generate.js --no-pdf"
   },
   "devDependencies": {
     "husky": "^9.1.7",
