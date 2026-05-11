@@ -445,6 +445,10 @@
       "name": "Star Catcher",
       "description": "Catch the falling stars!"
     },
+    "orixasOffering": {
+      "name": "Orixás Offering",
+      "description": "Match the sacred offerings to the right Orixá!"
+    },
     "kidsChess": {
       "name": "Kids Chess",
       "description": "Learn chess with hints & friendly pets!"
@@ -969,6 +973,21 @@
       "gameOver": "Game Over",
       "playAgain": "Play Again",
       "watchAd": "🎬 Watch Ad to Double!"
+    }
+  },
+  "orixasOffering": {
+    "home": {
+      "title": "Orixás Offering",
+      "subtitle": "Guide the sacred offerings to the right Orixá!",
+      "play": "Play",
+      "instructions": "Tap the correct Orixá shrine before the offering reaches the bottom. Keep your streak to earn more points!",
+      "bestScore": "Best Score"
+    },
+    "game": {
+      "streak": "Streak",
+      "finalScore": "Final Score",
+      "gameOver": "Game Over",
+      "playAgain": "Play Again"
     }
   },
   "kidsChess": {

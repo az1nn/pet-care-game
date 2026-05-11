@@ -101,6 +101,8 @@ export type RootStackParamList = {
   SlidingPuzzleGame: { difficulty: 'easy' | 'hard' };
   SnackStackHome: undefined;
   SnackStackGame: undefined;
+  OrixasOfferingHome: undefined;
+  OrixasOfferingGame: undefined;
   StarCatcherHome: undefined;
   StarCatcherGame: undefined;
   TreasureDigHome: undefined;
@@ -152,7 +154,7 @@ export type RootStackParamList = {
   TreatTossGame: undefined;
   SplashyBathHome: undefined;
   SplashyBathGame: undefined;
-    /** Multiplayer screens */
+  /** Multiplayer screens */
   MuitoHome: undefined;
   MuitoLobby: undefined;
   MuitoGame: undefined;
