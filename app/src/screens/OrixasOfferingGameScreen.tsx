@@ -76,7 +76,7 @@ export const OrixasOfferingGameScreen: React.FC<Props> = ({ navigation }) => {
   );
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
 
-  // eslint-disable-next-line react-hooks/refs
+  // eslint-disable-next-line react-hooks/refs -- Animated.Value must be accessed during render for transforms
   const offeringY = useRef(new Animated.Value(-60)).current;
   const scoreRef = useRef(0);
   const streakRef = useRef(0);
@@ -300,7 +300,7 @@ export const OrixasOfferingGameScreen: React.FC<Props> = ({ navigation }) => {
       <Modal visible={gameOver} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalEmoji}>✨</Text>
+            <Text style={styles.modalEmoji}>🕯️</Text>
             <Text style={styles.modalTitle}>{t('orixasOffering.game.gameOver')}</Text>
             <Text style={styles.modalScore}>
               {t('orixasOffering.game.finalScore')}: {score}

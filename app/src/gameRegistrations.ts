@@ -455,7 +455,7 @@ export function registerAllGames() {
     id: 'orixas-offering',
     nameKey: 'selectGame.orixasOffering.name',
     descriptionKey: 'selectGame.orixasOffering.description',
-    emoji: '\u2728',
+    emoji: '🕯️',
     category: 'casual',
     navigator: OrixasOfferingNavigator,
     providers: [OrixasOfferingProvider],
