@@ -67,6 +67,8 @@ import { HideAndSeekProvider } from './context/HideAndSeekContext';
 import { HideAndSeekNavigator } from './screens/HideAndSeekNavigator';
 import { StarCatcherProvider } from './context/StarCatcherContext';
 import { StarCatcherNavigator } from './screens/StarCatcherNavigator';
+import { OrixasOfferingProvider } from './context/OrixasOfferingContext';
+import { OrixasOfferingNavigator } from './screens/OrixasOfferingNavigator';
 import { GbaEmulatorProvider } from './context/GbaEmulatorContext';
 import { GbaEmulatorNavigator } from './screens/GbaEmulatorNavigator';
 import { KidsChessProvider } from './context/KidsChessContext';
@@ -207,51 +209,278 @@ export function registerAllGames() {
     isEnabled: true,
   });
 
-  gameRegistry.register({ id: 'bubble-pop', nameKey: 'selectGame.bubblePop.name', descriptionKey: 'selectGame.bubblePop.description', emoji: '\uD83E\uDEE7', category: 'casual', navigator: BubblePopNavigator, providers: [BubblePopProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'bubble-pop',
+    nameKey: 'selectGame.bubblePop.name',
+    descriptionKey: 'selectGame.bubblePop.description',
+    emoji: '\uD83E\uDEE7',
+    category: 'casual',
+    navigator: BubblePopNavigator,
+    providers: [BubblePopProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'pet-dance-party', nameKey: 'selectGame.petDanceParty.name', descriptionKey: 'selectGame.petDanceParty.description', emoji: '\uD83E\uDEA9', category: 'casual', navigator: PetDancePartyNavigator, providers: [PetDancePartyProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'pet-dance-party',
+    nameKey: 'selectGame.petDanceParty.name',
+    descriptionKey: 'selectGame.petDanceParty.description',
+    emoji: '\uD83E\uDEA9',
+    category: 'casual',
+    navigator: PetDancePartyNavigator,
+    providers: [PetDancePartyProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'treasure-dig', nameKey: 'selectGame.treasureDig.name', descriptionKey: 'selectGame.treasureDig.description', emoji: '\uD83D\uDC8E', category: 'casual', navigator: TreasureDigNavigator, providers: [TreasureDigProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'treasure-dig',
+    nameKey: 'selectGame.treasureDig.name',
+    descriptionKey: 'selectGame.treasureDig.description',
+    emoji: '\uD83D\uDC8E',
+    category: 'casual',
+    navigator: TreasureDigNavigator,
+    providers: [TreasureDigProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'balloon-float', nameKey: 'selectGame.balloonFloat.name', descriptionKey: 'selectGame.balloonFloat.description', emoji: '\uD83C\uDF88', category: 'casual', navigator: BalloonFloatNavigator, providers: [BalloonFloatProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'balloon-float',
+    nameKey: 'selectGame.balloonFloat.name',
+    descriptionKey: 'selectGame.balloonFloat.description',
+    emoji: '\uD83C\uDF88',
+    category: 'casual',
+    navigator: BalloonFloatNavigator,
+    providers: [BalloonFloatProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'paint-splash', nameKey: 'selectGame.paintSplash.name', descriptionKey: 'selectGame.paintSplash.description', emoji: '\uD83C\uDFA8', category: 'casual', navigator: PaintSplashNavigator, providers: [PaintSplashProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'paint-splash',
+    nameKey: 'selectGame.paintSplash.name',
+    descriptionKey: 'selectGame.paintSplash.description',
+    emoji: '\uD83C\uDFA8',
+    category: 'casual',
+    navigator: PaintSplashNavigator,
+    providers: [PaintSplashProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'snack-stack', nameKey: 'selectGame.snackStack.name', descriptionKey: 'selectGame.snackStack.description', emoji: '\uD83E\uDD5E', category: 'casual', navigator: SnackStackNavigator, providers: [SnackStackProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'snack-stack',
+    nameKey: 'selectGame.snackStack.name',
+    descriptionKey: 'selectGame.snackStack.description',
+    emoji: '\uD83E\uDD5E',
+    category: 'casual',
+    navigator: SnackStackNavigator,
+    providers: [SnackStackProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'lightning-tap', nameKey: 'selectGame.lightningTap.name', descriptionKey: 'selectGame.lightningTap.description', emoji: '\u26A1', category: 'casual', navigator: LightningTapNavigator, providers: [LightningTapProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'lightning-tap',
+    nameKey: 'selectGame.lightningTap.name',
+    descriptionKey: 'selectGame.lightningTap.description',
+    emoji: '\u26A1',
+    category: 'casual',
+    navigator: LightningTapNavigator,
+    providers: [LightningTapProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'path-finder', nameKey: 'selectGame.pathFinder.name', descriptionKey: 'selectGame.pathFinder.description', emoji: '\uD83D\uDC3E', category: 'puzzle', navigator: PathFinderNavigator, providers: [PathFinderProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'path-finder',
+    nameKey: 'selectGame.pathFinder.name',
+    descriptionKey: 'selectGame.pathFinder.description',
+    emoji: '\uD83D\uDC3E',
+    category: 'puzzle',
+    navigator: PathFinderNavigator,
+    providers: [PathFinderProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'shape-sorter', nameKey: 'selectGame.shapeSorter.name', descriptionKey: 'selectGame.shapeSorter.description', emoji: '\uD83E\uDDE9', category: 'puzzle', navigator: ShapeSorterNavigator, providers: [ShapeSorterProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'shape-sorter',
+    nameKey: 'selectGame.shapeSorter.name',
+    descriptionKey: 'selectGame.shapeSorter.description',
+    emoji: '\uD83E\uDDE9',
+    category: 'puzzle',
+    navigator: ShapeSorterNavigator,
+    providers: [ShapeSorterProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'mirror-match-new', nameKey: 'selectGame.mirrorMatch.name', descriptionKey: 'selectGame.mirrorMatch.description', emoji: '\uD83E\uDE9E', category: 'puzzle', navigator: MirrorMatchNavigator, providers: [MirrorMatchGameProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'mirror-match-new',
+    nameKey: 'selectGame.mirrorMatch.name',
+    descriptionKey: 'selectGame.mirrorMatch.description',
+    emoji: '\uD83E\uDE9E',
+    category: 'puzzle',
+    navigator: MirrorMatchNavigator,
+    providers: [MirrorMatchGameProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'word-bubbles', nameKey: 'selectGame.wordBubbles.name', descriptionKey: 'selectGame.wordBubbles.description', emoji: '\uD83D\uDD24', category: 'puzzle', navigator: WordBubblesNavigator, providers: [WordBubblesProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'word-bubbles',
+    nameKey: 'selectGame.wordBubbles.name',
+    descriptionKey: 'selectGame.wordBubbles.description',
+    emoji: '\uD83D\uDD24',
+    category: 'puzzle',
+    navigator: WordBubblesNavigator,
+    providers: [WordBubblesProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'jigsaw-pets', nameKey: 'selectGame.jigsawPets.name', descriptionKey: 'selectGame.jigsawPets.description', emoji: '\uD83D\uDDBC\uFE0F', category: 'puzzle', navigator: JigsawPetsNavigator, providers: [JigsawPetsProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'jigsaw-pets',
+    nameKey: 'selectGame.jigsawPets.name',
+    descriptionKey: 'selectGame.jigsawPets.description',
+    emoji: '\uD83D\uDDBC\uFE0F',
+    category: 'puzzle',
+    navigator: JigsawPetsNavigator,
+    providers: [JigsawPetsProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'connect-dots', nameKey: 'selectGame.connectDots.name', descriptionKey: 'selectGame.connectDots.description', emoji: '\u2728', category: 'puzzle', navigator: ConnectDotsNavigator, providers: [ConnectDotsProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'connect-dots',
+    nameKey: 'selectGame.connectDots.name',
+    descriptionKey: 'selectGame.connectDots.description',
+    emoji: '\u2728',
+    category: 'puzzle',
+    navigator: ConnectDotsNavigator,
+    providers: [ConnectDotsProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'pet-explorer', nameKey: 'selectGame.petExplorer.name', descriptionKey: 'selectGame.petExplorer.description', emoji: '\uD83E\uDDED', category: 'adventure', navigator: PetExplorerNavigator, providers: [PetExplorerProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'pet-explorer',
+    nameKey: 'selectGame.petExplorer.name',
+    descriptionKey: 'selectGame.petExplorer.description',
+    emoji: '\uD83E\uDDED',
+    category: 'adventure',
+    navigator: PetExplorerNavigator,
+    providers: [PetExplorerProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'weather-wizard', nameKey: 'selectGame.weatherWizard.name', descriptionKey: 'selectGame.weatherWizard.description', emoji: '\uD83C\uDF08', category: 'adventure', navigator: WeatherWizardNavigator, providers: [WeatherWizardProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'weather-wizard',
+    nameKey: 'selectGame.weatherWizard.name',
+    descriptionKey: 'selectGame.weatherWizard.description',
+    emoji: '\uD83C\uDF08',
+    category: 'adventure',
+    navigator: WeatherWizardNavigator,
+    providers: [WeatherWizardProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'pet-taxi', nameKey: 'selectGame.petTaxi.name', descriptionKey: 'selectGame.petTaxi.description', emoji: '\uD83D\uDE95', category: 'adventure', navigator: PetTaxiNavigator, providers: [PetTaxiProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'pet-taxi',
+    nameKey: 'selectGame.petTaxi.name',
+    descriptionKey: 'selectGame.petTaxi.description',
+    emoji: '\uD83D\uDE95',
+    category: 'adventure',
+    navigator: PetTaxiNavigator,
+    providers: [PetTaxiProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'pet-chef', nameKey: 'selectGame.petChef.name', descriptionKey: 'selectGame.petChef.description', emoji: '\uD83D\uDC68\u200D\uD83C\uDF73', category: 'casual', navigator: PetChefNavigator, providers: [PetChefProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'pet-chef',
+    nameKey: 'selectGame.petChef.name',
+    descriptionKey: 'selectGame.petChef.description',
+    emoji: '\uD83D\uDC68\u200D\uD83C\uDF73',
+    category: 'casual',
+    navigator: PetChefNavigator,
+    providers: [PetChefProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'music-maker', nameKey: 'selectGame.musicMaker.name', descriptionKey: 'selectGame.musicMaker.description', emoji: '\uD83C\uDFB5', category: 'casual', navigator: MusicMakerNavigator, providers: [MusicMakerProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'music-maker',
+    nameKey: 'selectGame.musicMaker.name',
+    descriptionKey: 'selectGame.musicMaker.description',
+    emoji: '\uD83C\uDFB5',
+    category: 'casual',
+    navigator: MusicMakerNavigator,
+    providers: [MusicMakerProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'garden-grow', nameKey: 'selectGame.gardenGrow.name', descriptionKey: 'selectGame.gardenGrow.description', emoji: '\uD83C\uDF3B', category: 'casual', navigator: GardenGrowNavigator, providers: [GardenGrowProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'garden-grow',
+    nameKey: 'selectGame.gardenGrow.name',
+    descriptionKey: 'selectGame.gardenGrow.description',
+    emoji: '\uD83C\uDF3B',
+    category: 'casual',
+    navigator: GardenGrowNavigator,
+    providers: [GardenGrowProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'photo-studio', nameKey: 'selectGame.photoStudio.name', descriptionKey: 'selectGame.photoStudio.description', emoji: '\uD83D\uDCF8', category: 'casual', navigator: PhotoStudioNavigator, providers: [PhotoStudioProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'photo-studio',
+    nameKey: 'selectGame.photoStudio.name',
+    descriptionKey: 'selectGame.photoStudio.description',
+    emoji: '\uD83D\uDCF8',
+    category: 'casual',
+    navigator: PhotoStudioNavigator,
+    providers: [PhotoStudioProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'hide-and-seek', nameKey: 'selectGame.hideAndSeek.name', descriptionKey: 'selectGame.hideAndSeek.description', emoji: '\uD83E\uDEE3', category: 'casual', navigator: HideAndSeekNavigator, providers: [HideAndSeekProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'hide-and-seek',
+    nameKey: 'selectGame.hideAndSeek.name',
+    descriptionKey: 'selectGame.hideAndSeek.description',
+    emoji: '\uD83E\uDEE3',
+    category: 'casual',
+    navigator: HideAndSeekNavigator,
+    providers: [HideAndSeekProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'star-catcher', nameKey: 'selectGame.starCatcher.name', descriptionKey: 'selectGame.starCatcher.description', emoji: '\u2B50', category: 'casual', navigator: StarCatcherNavigator, providers: [StarCatcherProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'star-catcher',
+    nameKey: 'selectGame.starCatcher.name',
+    descriptionKey: 'selectGame.starCatcher.description',
+    emoji: '\u2B50',
+    category: 'casual',
+    navigator: StarCatcherNavigator,
+    providers: [StarCatcherProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'gba-emulator', nameKey: 'selectGame.gbaEmulator.name', descriptionKey: 'selectGame.gbaEmulator.description', emoji: '\uD83D\uDD79\uFE0F', category: 'emulator', navigator: GbaEmulatorNavigator, providers: [GbaEmulatorProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'orixas-offering',
+    nameKey: 'selectGame.orixasOffering.name',
+    descriptionKey: 'selectGame.orixasOffering.description',
+    emoji: '🕯️',
+    category: 'casual',
+    navigator: OrixasOfferingNavigator,
+    providers: [OrixasOfferingProvider],
+    isEnabled: true,
+  });
 
-  gameRegistry.register({ id: 'kids-chess', nameKey: 'selectGame.kidsChess.name', descriptionKey: 'selectGame.kidsChess.description', emoji: '♟️', category: 'board', navigator: KidsChessNavigator, providers: [KidsChessProvider], isEnabled: true });
+  gameRegistry.register({
+    id: 'gba-emulator',
+    nameKey: 'selectGame.gbaEmulator.name',
+    descriptionKey: 'selectGame.gbaEmulator.description',
+    emoji: '\uD83D\uDD79\uFE0F',
+    category: 'emulator',
+    navigator: GbaEmulatorNavigator,
+    providers: [GbaEmulatorProvider],
+    isEnabled: true,
+  });
+
+  gameRegistry.register({
+    id: 'kids-chess',
+    nameKey: 'selectGame.kidsChess.name',
+    descriptionKey: 'selectGame.kidsChess.description',
+    emoji: '♟️',
+    category: 'board',
+    navigator: KidsChessNavigator,
+    providers: [KidsChessProvider],
+    isEnabled: true,
+  });
 }

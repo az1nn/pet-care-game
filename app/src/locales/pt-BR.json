@@ -445,6 +445,10 @@
       "name": "Caça-Estrelas",
       "description": "Pegue as estrelas cadentes!"
     },
+    "orixasOffering": {
+      "name": "Oferenda dos Orixás",
+      "description": "Leve as oferendas sagradas ao Orixá certo!"
+    },
     "kidsChess": {
       "name": "Xadrez Infantil",
       "description": "Aprenda xadrez com dicas e pets amigáveis!"
@@ -969,6 +973,21 @@
       "gameOver": "Fim de Jogo",
       "playAgain": "Jogar Novamente",
       "watchAd": "🎬 Assista ao Anúncio para Dobrar!"
+    }
+  },
+  "orixasOffering": {
+    "home": {
+      "title": "Oferenda dos Orixás",
+      "subtitle": "Leve as oferendas sagradas ao Orixá certo!",
+      "play": "Jogar",
+      "instructions": "Toque no Orixá certo antes da oferenda chegar ao fundo. Mantenha a sequência para ganhar mais pontos!",
+      "bestScore": "Melhor Pontuação"
+    },
+    "game": {
+      "streak": "Sequência",
+      "finalScore": "Pontuação Final",
+      "gameOver": "Fim de Jogo",
+      "playAgain": "Jogar Novamente"
     }
   },
   "kidsChess": {
