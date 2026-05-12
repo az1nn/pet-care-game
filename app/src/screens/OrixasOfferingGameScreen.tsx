@@ -297,7 +297,8 @@ export const OrixasOfferingGameScreen: React.FC<Props> = ({ navigation }) => {
 
   const selectOrixa = useCallback(
     (orixaId: string) => {
-      const player = ORIXAS.find((o) => o.id === orixaId)!;
+      const player = ORIXAS.find((o) => o.id === orixaId);
+      if (!player) return;
       const others = ORIXAS.filter((o) => o.id !== orixaId);
       const opponent = others[Math.floor(Math.random() * others.length)];
 

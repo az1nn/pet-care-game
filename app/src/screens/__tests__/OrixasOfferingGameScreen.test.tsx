@@ -61,17 +61,13 @@ describe('OrixasOfferingGameScreen', () => {
   });
 
   it('shows 4 move buttons in battle', () => {
-    const { getByText, getAllByText } = render(
-      <OrixasOfferingGameScreen navigation={navigation as any} />
-    );
+    const { getByText } = render(<OrixasOfferingGameScreen navigation={navigation as any} />);
     fireEvent.press(getByText('Ogum'));
     // Ogum has 4 moves
     expect(getByText('Golpe da Espada')).toBeTruthy();
     expect(getByText('Escudo de Ferro')).toBeTruthy();
     expect(getByText('Fúria da Batalha')).toBeTruthy();
     expect(getByText('Caminho Aberto')).toBeTruthy();
-    // Suppress unused warning
-    void getAllByText;
   });
 
   it('navigates back from character select', () => {
@@ -97,7 +93,6 @@ describe('OrixasOfferingGameScreen', () => {
       fireEvent.press(getByText('Xangô'));
     });
     // Battle log should contain the start message key
-    const { queryByText } = render(<OrixasOfferingGameScreen navigation={navigation as any} />);
-    expect(queryByText('orixasOffering.select.title')).toBeTruthy();
+    expect(getByText(/orixasOffering\.battle\.start/)).toBeTruthy();
   });
 });
