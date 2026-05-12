@@ -8,6 +8,7 @@ import {
   Dimensions,
   Animated,
   Modal,
+  ScrollView,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useOrixasOffering } from '../context/OrixasOfferingContext';
@@ -16,294 +17,553 @@ import { useGameBack } from '../hooks/useGameBack';
 
 type Props = { navigation: ScreenNavigationProp<'OrixasOfferingGame'> };
 
-const { width: SW, height: SH } = Dimensions.get('window');
+const { width: SW } = Dimensions.get('window');
 
-const GAME_DURATION = 60;
-const MAX_LIVES = 3;
-const BASE_FALL_SPEED = 3200;
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
-interface Orixa {
+interface Move {
   id: string;
   name: string;
   emoji: string;
-  color: string;
-  offerings: string[];
+  damage: number;
+  heal?: number;
 }
 
-const ALL_ORIXAS: Orixa[] = [
-  { id: 'iemanja', name: 'Iemanjá', emoji: '🌊', color: '#1565C0', offerings: ['🌊', '🐚', '🐠'] },
-  { id: 'xango', name: 'Xangô', emoji: '⚡', color: '#B71C1C', offerings: ['⚡', '🔥', '🥁'] },
-  { id: 'ogum', name: 'Ogum', emoji: '⚔️', color: '#1B5E20', offerings: ['⚔️', '🌿', '🛡️'] },
-  { id: 'oxum', name: 'Oxum', emoji: '💛', color: '#E65100', offerings: ['💛', '🌺', '🪙'] },
-  { id: 'iansa', name: 'Iansã', emoji: '🌪️', color: '#4A148C', offerings: ['🌪️', '🍃', '💨'] },
-  { id: 'oxala', name: 'Oxalá', emoji: '🕊️', color: '#37474F', offerings: ['🕊️', '🌸', '☁️'] },
+interface OrixaCharacter {
+  id: string;
+  name: string;
+  color: string;
+  maxHp: number;
+  spriteTop: string;
+  spriteBody: string;
+  spriteBottom: string;
+  moves: Move[];
+}
+
+const ORIXAS: OrixaCharacter[] = [
+  {
+    id: 'ogum',
+    name: 'Ogum',
+    color: '#2E7D32',
+    maxHp: 120,
+    spriteTop: '⚔️🌿⚔️',
+    spriteBody: '🦸‍♂️',
+    spriteBottom: '🛡️⚔️🛡️',
+    moves: [
+      { id: 'sword', name: 'Golpe da Espada', emoji: '⚔️', damage: 35 },
+      { id: 'shield', name: 'Escudo de Ferro', emoji: '🛡️', damage: 15, heal: 15 },
+      { id: 'fury', name: 'Fúria da Batalha', emoji: '💢', damage: 45 },
+      { id: 'path', name: 'Caminho Aberto', emoji: '🌿', damage: 25 },
+    ],
+  },
+  {
+    id: 'oxala',
+    name: 'Oxalá',
+    color: '#546E7A',
+    maxHp: 110,
+    spriteTop: '✨☁️✨',
+    spriteBody: '🧙‍♂️',
+    spriteBottom: '🕊️🌸🕊️',
+    moves: [
+      { id: 'light', name: 'Luz Divina', emoji: '✨', damage: 30 },
+      { id: 'peace', name: 'Paz Sagrada', emoji: '🕊️', damage: 20, heal: 20 },
+      { id: 'creation', name: 'Criação', emoji: '🌸', damage: 25 },
+      { id: 'pure', name: 'Branco da Pureza', emoji: '☁️', damage: 40 },
+    ],
+  },
+  {
+    id: 'iemanja',
+    name: 'Iemanjá',
+    color: '#1565C0',
+    maxHp: 105,
+    spriteTop: '🌊👑🌊',
+    spriteBody: '🧜‍♀️',
+    spriteBottom: '🐚🐠🐚',
+    moves: [
+      { id: 'wave', name: 'Grande Onda', emoji: '🌊', damage: 30 },
+      { id: 'siren', name: 'Canto da Sereia', emoji: '🐚', damage: 35 },
+      { id: 'storm', name: 'Tempestade do Mar', emoji: '⛈️', damage: 45 },
+      { id: 'embrace', name: 'Abraço das Águas', emoji: '💧', damage: 20, heal: 15 },
+    ],
+  },
+  {
+    id: 'xango',
+    name: 'Xangô',
+    color: '#C62828',
+    maxHp: 115,
+    spriteTop: '⚡🔥⚡',
+    spriteBody: '🦸‍♂️',
+    spriteBottom: '🥁⚡🥁',
+    moves: [
+      { id: 'lightning', name: 'Raio', emoji: '⚡', damage: 40 },
+      { id: 'justice', name: 'Chama da Justiça', emoji: '🔥', damage: 30 },
+      { id: 'drum', name: 'Tambor Sagrado', emoji: '🥁', damage: 25 },
+      { id: 'thunder', name: 'Trovão', emoji: '🌩️', damage: 45 },
+    ],
+  },
+  {
+    id: 'oxum',
+    name: 'Oxum',
+    color: '#E65100',
+    maxHp: 100,
+    spriteTop: '🌺💛🌺',
+    spriteBody: '👸',
+    spriteBottom: '🪙💧🌺',
+    moves: [
+      { id: 'gold', name: 'Ouro Encantado', emoji: '🪙', damage: 25 },
+      { id: 'love', name: 'Poder do Amor', emoji: '💛', damage: 20, heal: 20 },
+      { id: 'flower', name: 'Flor do Encanto', emoji: '🌺', damage: 30 },
+      { id: 'waterfall', name: 'Cachoeira', emoji: '💦', damage: 35 },
+    ],
+  },
+  {
+    id: 'iansa',
+    name: 'Iansã',
+    color: '#6A1B9A',
+    maxHp: 110,
+    spriteTop: '🌩️🌪️🌩️',
+    spriteBody: '🦸‍♀️',
+    spriteBottom: '🍃⚡🍃',
+    moves: [
+      { id: 'gale', name: 'Vendaval', emoji: '🌪️', damage: 35 },
+      { id: 'dance', name: 'Dança dos Ventos', emoji: '🍃', damage: 25 },
+      { id: 'bolt', name: 'Raio de Iansã', emoji: '⚡', damage: 40 },
+      { id: 'tempest', name: 'Tempestade', emoji: '🌩️', damage: 45 },
+    ],
+  },
 ];
 
-function pickRandom<T>(arr: T[], count: number): T[] {
-  const copy = [...arr];
-  const result: T[] = [];
-  for (let i = 0; i < count && copy.length > 0; i++) {
-    const idx = Math.floor(Math.random() * copy.length);
-    result.push(copy.splice(idx, 1)[0]);
-  }
-  return result;
+// ─── Sub-components ────────────────────────────────────────────────────────────
+
+interface SpriteProps {
+  orixa: OrixaCharacter;
+  isEnemy?: boolean;
+  shakeX: Animated.Value;
 }
 
-function getOfferingsForLevel(orixa: Orixa, level: number): string[] {
-  if (level <= 1) return [orixa.offerings[0]];
-  if (level <= 3) return orixa.offerings.slice(0, 2);
-  return orixa.offerings;
+const OrixaSprite: React.FC<SpriteProps> = ({ orixa, isEnemy = false, shakeX }) => (
+  <Animated.View style={{ transform: [{ translateX: shakeX }] }}>
+    <View
+      style={[
+        isEnemy ? styles.enemySpriteBox : styles.playerSpriteBox,
+        { backgroundColor: orixa.color + '28', borderColor: orixa.color + '88' },
+      ]}
+    >
+      <Text style={isEnemy ? styles.enemySpriteTop : styles.playerSpriteTop}>
+        {orixa.spriteTop}
+      </Text>
+      <Text style={isEnemy ? styles.enemySpriteBody : styles.playerSpriteBody}>
+        {orixa.spriteBody}
+      </Text>
+      <Text style={isEnemy ? styles.enemySpriteBottom : styles.playerSpriteBottom}>
+        {orixa.spriteBottom}
+      </Text>
+    </View>
+  </Animated.View>
+);
+
+interface HpBarProps {
+  current: number;
+  max: number;
+  anim: Animated.Value;
+  name: string;
 }
 
-function safeStop(anim: Animated.CompositeAnimation | null) {
-  if (anim && typeof (anim as unknown as { stop?: () => void }).stop === 'function') {
-    (anim as unknown as { stop: () => void }).stop();
-  }
+const HpBar: React.FC<HpBarProps> = ({ current, max, anim, name }) => {
+  const pct = current / max;
+  const barColor = pct > 0.5 ? '#4CAF50' : pct > 0.25 ? '#FFC107' : '#F44336';
+  return (
+    <View style={styles.hpBarWrapper}>
+      <Text style={styles.hpCharName} numberOfLines={1}>
+        {name}
+      </Text>
+      <View style={styles.hpBarRow}>
+        <Text style={styles.hpLabel}>HP</Text>
+        <View style={styles.hpBarBg}>
+          <Animated.View
+            style={[
+              styles.hpBarFill,
+              {
+                width: anim.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }),
+                backgroundColor: barColor,
+              },
+            ]}
+          />
+        </View>
+      </View>
+      <Text style={styles.hpNumbers}>
+        {current}/{max}
+      </Text>
+    </View>
+  );
+};
+
+interface SelectProps {
+  onSelect: (id: string) => void;
+  onBack: () => void;
 }
+
+const CharacterSelect: React.FC<SelectProps> = ({ onSelect, onBack }) => {
+  const { t } = useTranslation();
+  return (
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity style={styles.selectBackBtn} onPress={onBack}>
+        <Text style={styles.backText}>← {t('common.back')}</Text>
+      </TouchableOpacity>
+      <Text style={styles.selectTitle}>{t('orixasOffering.select.title')}</Text>
+      <Text style={styles.selectSubtitle}>{t('orixasOffering.select.subtitle')}</Text>
+      <ScrollView contentContainerStyle={styles.selectGrid} showsVerticalScrollIndicator={false}>
+        {ORIXAS.map((orixa) => (
+          <TouchableOpacity
+            key={orixa.id}
+            style={[
+              styles.selectCard,
+              { borderColor: orixa.color, backgroundColor: orixa.color + '28' },
+            ]}
+            onPress={() => onSelect(orixa.id)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.selectSpriteTop}>{orixa.spriteTop}</Text>
+            <Text style={styles.selectSpriteBody}>{orixa.spriteBody}</Text>
+            <Text style={styles.selectName} numberOfLines={1}>
+              {orixa.name}
+            </Text>
+            <Text style={styles.selectHp}>
+              {t('orixasOffering.select.hp')}: {orixa.maxHp}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+// ─── Main Screen ───────────────────────────────────────────────────────────────
 
 export const OrixasOfferingGameScreen: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation();
   const { updateBestScore } = useOrixasOffering();
 
-  const [score, setScore] = useState(0);
-  const [streak, setStreak] = useState(0);
-  const [lives, setLives] = useState(MAX_LIVES);
-  const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
-  const [gameOver, setGameOver] = useState(false);
-  const [activeOrixas, setActiveOrixas] = useState<Orixa[]>([]);
-  const [currentOffering, setCurrentOffering] = useState<{ emoji: string; orixaId: string } | null>(
-    null
-  );
-  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
+  const [phase, setPhase] = useState<'select' | 'battle' | 'end'>('select');
+  const [playerOrixa, setPlayerOrixa] = useState<OrixaCharacter | null>(null);
+  const [opponentOrixa, setOpponentOrixa] = useState<OrixaCharacter | null>(null);
+  const [playerHp, setPlayerHp] = useState(0);
+  const [opponentHp, setOpponentHp] = useState(0);
+  const [turn, setTurn] = useState<'player' | 'opponent'>('player');
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [battleLog, setBattleLog] = useState('');
+  const [winner, setWinner] = useState<'player' | 'opponent' | null>(null);
+  const [totalDamage, setTotalDamage] = useState(0);
 
   // eslint-disable-next-line react-hooks/refs -- Animated.Value must be accessed during render for transforms
-  const offeringY = useRef(new Animated.Value(-60)).current;
-  const scoreRef = useRef(0);
-  const streakRef = useRef(0);
-  const livesRef = useRef(MAX_LIVES);
-  const levelRef = useRef(1);
-  const gameActiveRef = useRef(true);
-  const fallingAnimRef = useRef<Animated.CompositeAnimation | null>(null);
-  const activeOrixasRef = useRef<Orixa[]>([]);
-  // Stable ref for spawnOffering to avoid circular deps in useCallback
-  const spawnOfferingRef = useRef<(orixas: Orixa[]) => void>(() => {});
+  const playerShakeX = useRef(new Animated.Value(0)).current;
+  // eslint-disable-next-line react-hooks/refs -- Animated.Value must be accessed during render for transforms
+  const opponentShakeX = useRef(new Animated.Value(0)).current;
+  // eslint-disable-next-line react-hooks/refs -- Animated.Value must be accessed during render for transforms
+  const playerHpAnim = useRef(new Animated.Value(1)).current;
+  // eslint-disable-next-line react-hooks/refs -- Animated.Value must be accessed during render for transforms
+  const opponentHpAnim = useRef(new Animated.Value(1)).current;
+  // eslint-disable-next-line react-hooks/refs -- Animated.Value must be accessed during render for transforms
+  const flashAnim = useRef(new Animated.Value(0)).current;
+  const totalDamageRef = useRef(0);
+  const mountedRef = useRef(true);
 
-  const endGame = useCallback(() => {
-    gameActiveRef.current = false;
-    setGameOver(true);
-    updateBestScore(scoreRef.current);
-  }, [updateBestScore]);
-
-  const spawnOffering = useCallback(
-    (orixas: Orixa[]) => {
-      if (!gameActiveRef.current || orixas.length === 0) return;
-
-      const orixa = orixas[Math.floor(Math.random() * orixas.length)];
-      const pool = getOfferingsForLevel(orixa, levelRef.current);
-      const emoji = pool[Math.floor(Math.random() * pool.length)];
-
-      offeringY.setValue(-60);
-      setCurrentOffering({ emoji, orixaId: orixa.id });
-
-      const speed = Math.max(BASE_FALL_SPEED - levelRef.current * 300, 1200);
-      const anim = Animated.timing(offeringY, {
-        toValue: SH,
-        duration: speed,
-        useNativeDriver: true,
-      });
-      fallingAnimRef.current = anim;
-
-      anim.start(({ finished }) => {
-        if (!finished || !gameActiveRef.current) return;
-        livesRef.current -= 1;
-        const remaining = livesRef.current;
-        setLives(remaining);
-        streakRef.current = 0;
-        setStreak(0);
-        setFeedback('wrong');
-        setCurrentOffering(null);
-        if (remaining <= 0) {
-          endGame();
-        }
-      });
+  useEffect(
+    () => () => {
+      mountedRef.current = false;
     },
-    [offeringY, endGame]
+    []
   );
 
-  // Keep spawnOfferingRef current so respawn effect can use it without being in deps
-  useEffect(() => {
-    spawnOfferingRef.current = spawnOffering;
-  }, [spawnOffering]);
+  const shake = useCallback(
+    (target: Animated.Value) =>
+      Animated.sequence([
+        Animated.timing(target, { toValue: 14, duration: 60, useNativeDriver: true }),
+        Animated.timing(target, { toValue: -12, duration: 60, useNativeDriver: true }),
+        Animated.timing(target, { toValue: 8, duration: 60, useNativeDriver: true }),
+        Animated.timing(target, { toValue: 0, duration: 60, useNativeDriver: true }),
+      ]),
+    []
+  );
 
-  // Respawn offering whenever the slot is empty (after tap or miss)
-  useEffect(() => {
-    if (currentOffering === null && gameActiveRef.current && !gameOver) {
-      const t = setTimeout(() => {
-        if (gameActiveRef.current && activeOrixasRef.current.length > 0) {
-          setFeedback(null);
-          spawnOfferingRef.current(activeOrixasRef.current);
-        }
-      }, 350);
-      return () => clearTimeout(t);
-    }
-  }, [currentOffering, gameOver]);
+  const doFlash = useCallback(
+    () =>
+      Animated.sequence([
+        Animated.timing(flashAnim, { toValue: 0.55, duration: 80, useNativeDriver: true }),
+        Animated.timing(flashAnim, { toValue: 0, duration: 220, useNativeDriver: true }),
+      ]),
+    [flashAnim]
+  );
 
-  const setupRound = useCallback(() => {
-    const orixas = pickRandom(ALL_ORIXAS, 3);
-    activeOrixasRef.current = orixas;
-    setActiveOrixas(orixas);
-    return orixas;
-  }, []);
+  const selectOrixa = useCallback(
+    (orixaId: string) => {
+      const player = ORIXAS.find((o) => o.id === orixaId)!;
+      const others = ORIXAS.filter((o) => o.id !== orixaId);
+      const opponent = others[Math.floor(Math.random() * others.length)];
 
-  const resetGame = useCallback(() => {
-    safeStop(fallingAnimRef.current);
-    scoreRef.current = 0;
-    streakRef.current = 0;
-    livesRef.current = MAX_LIVES;
-    levelRef.current = 1;
-    gameActiveRef.current = true;
-    setScore(0);
-    setStreak(0);
-    setLives(MAX_LIVES);
-    setTimeLeft(GAME_DURATION);
-    setGameOver(false);
-    setFeedback(null);
-    setCurrentOffering(null);
-    setupRound();
-  }, [setupRound]);
+      setPlayerOrixa(player);
+      setOpponentOrixa(opponent);
+      setPlayerHp(player.maxHp);
+      setOpponentHp(opponent.maxHp);
+      playerHpAnim.setValue(1);
+      opponentHpAnim.setValue(1);
+      playerShakeX.setValue(0);
+      opponentShakeX.setValue(0);
+      setTurn('player');
+      setIsAnimating(false);
+      setBattleLog(t('orixasOffering.battle.start', { name: opponent.name }));
+      setWinner(null);
+      totalDamageRef.current = 0;
+      setTotalDamage(0);
+      setPhase('battle');
+    },
+    [t, playerHpAnim, opponentHpAnim, playerShakeX, opponentShakeX]
+  );
 
-  useEffect(() => {
-    setupRound();
-    // Initial offering spawn is handled by the respawn effect (currentOffering starts null)
+  const handleMove = useCallback(
+    (move: Move) => {
+      if (isAnimating || turn !== 'player' || !playerOrixa || !opponentOrixa) return;
+      setIsAnimating(true);
 
-    const timer = setInterval(() => {
-      if (!gameActiveRef.current) {
-        clearInterval(timer);
-        return;
-      }
-      setTimeLeft((prev) => {
-        const next = prev - 1;
-        if (next > 0 && next % 15 === 0) {
-          levelRef.current = Math.min(5, levelRef.current + 1);
-        }
-        if (next <= 0) {
-          clearInterval(timer);
-          gameActiveRef.current = false;
-        }
-        return next <= 0 ? 0 : next;
-      });
-    }, 1000);
+      // Player attacks
+      const dmg = Math.max(move.damage + Math.floor(Math.random() * 10) - 4, 1);
+      const healAmt = move.heal ?? 0;
+      const newOppHp = Math.max(opponentHp - dmg, 0);
+      const newPlayerHpHealed =
+        healAmt > 0 ? Math.min(playerHp + healAmt, playerOrixa.maxHp) : playerHp;
 
-    return () => {
-      gameActiveRef.current = false;
-      clearInterval(timer);
-      safeStop(fallingAnimRef.current);
-    };
-  }, [setupRound]);
+      setOpponentHp(newOppHp);
+      if (healAmt > 0) setPlayerHp(newPlayerHpHealed);
 
-  useEffect(() => {
-    if (timeLeft <= 0 && !gameOver) {
-      endGame();
-    }
-  }, [timeLeft, gameOver, endGame]);
+      Animated.timing(opponentHpAnim, {
+        toValue: newOppHp / opponentOrixa.maxHp,
+        duration: 400,
+        useNativeDriver: false,
+      }).start();
 
-  const handleTap = useCallback(
-    (tappedOrixaId: string) => {
-      if (!gameActiveRef.current || !currentOffering) return;
-      safeStop(fallingAnimRef.current);
+      totalDamageRef.current += dmg;
+      setTotalDamage(totalDamageRef.current);
 
-      if (tappedOrixaId === currentOffering.orixaId) {
-        streakRef.current += 1;
-        const multiplier = Math.min(streakRef.current, 5);
-        const points = 10 * multiplier;
-        scoreRef.current += points;
-        setScore(scoreRef.current);
-        setStreak(streakRef.current);
-        setFeedback('correct');
-      } else {
-        streakRef.current = 0;
-        setStreak(0);
-        livesRef.current -= 1;
-        setLives(livesRef.current);
-        setFeedback('wrong');
-        if (livesRef.current <= 0) {
-          setCurrentOffering(null);
-          endGame();
+      const playerLog =
+        healAmt > 0
+          ? t('orixasOffering.battle.attackHeal', {
+              name: playerOrixa.name,
+              move: move.name,
+              damage: dmg,
+              heal: healAmt,
+            })
+          : t('orixasOffering.battle.attack', {
+              name: playerOrixa.name,
+              move: move.name,
+              damage: dmg,
+            });
+      setBattleLog(playerLog);
+
+      Animated.parallel([doFlash(), shake(opponentShakeX)]).start(() => {
+        if (!mountedRef.current) return;
+
+        if (newOppHp <= 0) {
+          setWinner('player');
+          updateBestScore(totalDamageRef.current);
+          setPhase('end');
+          setIsAnimating(false);
           return;
         }
-      }
-      setCurrentOffering(null);
+
+        // Opponent's turn
+        setTurn('opponent');
+        const oppMove = opponentOrixa.moves[Math.floor(Math.random() * opponentOrixa.moves.length)];
+        const oppDmg = Math.max(oppMove.damage + Math.floor(Math.random() * 10) - 4, 1);
+        const oppHealAmt = oppMove.heal ?? 0;
+        const currPlayerHp = newPlayerHpHealed;
+
+        setTimeout(() => {
+          if (!mountedRef.current) return;
+
+          const newPHp = Math.max(currPlayerHp - oppDmg, 0);
+          setPlayerHp(newPHp);
+
+          Animated.timing(playerHpAnim, {
+            toValue: newPHp / playerOrixa.maxHp,
+            duration: 400,
+            useNativeDriver: false,
+          }).start();
+
+          if (oppHealAmt > 0) {
+            const healedOppHp = Math.min(newOppHp + oppHealAmt, opponentOrixa.maxHp);
+            setOpponentHp(healedOppHp);
+            Animated.timing(opponentHpAnim, {
+              toValue: healedOppHp / opponentOrixa.maxHp,
+              duration: 300,
+              useNativeDriver: false,
+            }).start();
+          }
+
+          const oppLog =
+            oppHealAmt > 0
+              ? t('orixasOffering.battle.attackHeal', {
+                  name: opponentOrixa.name,
+                  move: oppMove.name,
+                  damage: oppDmg,
+                  heal: oppHealAmt,
+                })
+              : t('orixasOffering.battle.attack', {
+                  name: opponentOrixa.name,
+                  move: oppMove.name,
+                  damage: oppDmg,
+                });
+          setBattleLog(oppLog);
+
+          shake(playerShakeX).start(() => {
+            if (!mountedRef.current) return;
+            if (newPHp <= 0) {
+              setWinner('opponent');
+              updateBestScore(totalDamageRef.current);
+              setPhase('end');
+            } else {
+              setTurn('player');
+            }
+            setIsAnimating(false);
+          });
+        }, 700);
+      });
     },
-    [currentOffering, endGame]
+    [
+      isAnimating,
+      turn,
+      playerOrixa,
+      opponentOrixa,
+      playerHp,
+      opponentHp,
+      t,
+      doFlash,
+      shake,
+      opponentShakeX,
+      playerShakeX,
+      opponentHpAnim,
+      playerHpAnim,
+      updateBestScore,
+    ]
   );
 
-  const handleBack = useGameBack(navigation, {
-    cleanup: () => {
-      gameActiveRef.current = false;
-      safeStop(fallingAnimRef.current);
-    },
-  });
+  const resetGame = useCallback(() => {
+    setPhase('select');
+    setPlayerOrixa(null);
+    setOpponentOrixa(null);
+    setWinner(null);
+    setBattleLog('');
+    setIsAnimating(false);
+    totalDamageRef.current = 0;
+    setTotalDamage(0);
+  }, []);
 
-  const livesDisplay = Array.from({ length: MAX_LIVES }, (_, i) => (i < lives ? '❤️' : '🖤')).join(
-    ' '
-  );
+  const handleBack = useGameBack(navigation);
+
+  if (phase === 'select') {
+    return <CharacterSelect onSelect={selectOrixa} onBack={handleBack} />;
+  }
+
+  if (!playerOrixa || !opponentOrixa) return null;
 
   return (
-    <SafeAreaView
-      style={[
-        styles.container,
-        feedback === 'correct' && styles.containerCorrect,
-        feedback === 'wrong' && styles.containerWrong,
-      ]}
-    >
+    <SafeAreaView style={styles.container}>
+      {/* Attack flash overlay */}
+      <Animated.View style={[styles.flashOverlay, { opacity: flashAnim }]} pointerEvents="none" />
+
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
           <Text style={styles.backText}>← {t('common.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.scoreText}>{score}</Text>
-        <Text style={styles.timerText}>{timeLeft}s</Text>
+        <Text style={styles.headerTitle}>⚔️ {t('orixasOffering.battle.title')} ⚔️</Text>
+        <Text style={styles.headerDmg}>💥 {totalDamage}</Text>
       </View>
 
-      <View style={styles.livesRow}>
-        <Text style={styles.livesText}>{livesDisplay}</Text>
-        {streak > 1 && (
-          <Text style={styles.streakText}>
-            x{Math.min(streak, 5)} {t('orixasOffering.game.streak')}!
-          </Text>
+      {/* Battle arena */}
+      <View style={styles.battleArena}>
+        {/* Enemy: info top-left, sprite top-right */}
+        <View style={styles.enemyRow}>
+          <HpBar
+            current={opponentHp}
+            max={opponentOrixa.maxHp}
+            anim={opponentHpAnim}
+            name={opponentOrixa.name}
+          />
+          <OrixaSprite orixa={opponentOrixa} isEnemy shakeX={opponentShakeX} />
+        </View>
+
+        {/* Player: sprite bottom-left, info bottom-right */}
+        <View style={styles.playerRow}>
+          <OrixaSprite orixa={playerOrixa} shakeX={playerShakeX} />
+          <HpBar
+            current={playerHp}
+            max={playerOrixa.maxHp}
+            anim={playerHpAnim}
+            name={playerOrixa.name}
+          />
+        </View>
+      </View>
+
+      {/* Battle log */}
+      <View style={styles.battleLogBox}>
+        <Text style={styles.battleLogText}>{battleLog}</Text>
+      </View>
+
+      {/* Move buttons (player turn) or waiting indicator */}
+      <View style={styles.movesArea}>
+        {turn === 'player' && !isAnimating ? (
+          <View style={styles.movesGrid}>
+            {playerOrixa.moves.map((move) => (
+              <TouchableOpacity
+                key={move.id}
+                style={[styles.moveBtn, { borderColor: playerOrixa.color }]}
+                onPress={() => handleMove(move)}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.moveEmoji}>{move.emoji}</Text>
+                <Text style={styles.moveName} numberOfLines={2}>
+                  {move.name}
+                </Text>
+                <Text style={styles.moveDmg}>{move.damage}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ) : (
+          <View style={styles.waitingBox}>
+            <Text style={styles.waitingText}>
+              {turn === 'opponent'
+                ? t('orixasOffering.battle.enemyTurn', { name: opponentOrixa.name })
+                : '…'}
+            </Text>
+          </View>
         )}
       </View>
 
-      <View style={styles.gameArea}>
-        {currentOffering && (
-          <Animated.View
-            style={[styles.offeringContainer, { transform: [{ translateY: offeringY }] }]}
-          >
-            <Text style={styles.offeringEmoji}>{currentOffering.emoji}</Text>
-          </Animated.View>
-        )}
-      </View>
-
-      <View style={styles.shrinesRow}>
-        {activeOrixas.map((orixa) => (
-          <TouchableOpacity
-            key={orixa.id}
-            style={[styles.shrine, { backgroundColor: orixa.color }]}
-            onPress={() => handleTap(orixa.id)}
-            activeOpacity={0.75}
-          >
-            <Text style={styles.shrineEmoji}>{orixa.emoji}</Text>
-            <Text style={styles.shrineName}>{orixa.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <Modal visible={gameOver} transparent animationType="fade">
+      {/* End-game modal */}
+      <Modal visible={phase === 'end'} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalEmoji}>🕯️</Text>
-            <Text style={styles.modalTitle}>{t('orixasOffering.game.gameOver')}</Text>
+            <Text style={styles.modalEmoji}>{winner === 'player' ? '🏆' : '💔'}</Text>
+            <Text
+              style={[styles.modalTitle, { color: winner === 'player' ? '#f5c842' : '#ef5350' }]}
+            >
+              {winner === 'player'
+                ? t('orixasOffering.battle.victory')
+                : t('orixasOffering.battle.defeat')}
+            </Text>
+            <Text style={styles.modalSubtitle}>
+              {winner === 'player'
+                ? t('orixasOffering.battle.victoryMsg', {
+                    winner: playerOrixa.name,
+                    loser: opponentOrixa.name,
+                  })
+                : t('orixasOffering.battle.defeatMsg', {
+                    winner: opponentOrixa.name,
+                    loser: playerOrixa.name,
+                  })}
+            </Text>
             <Text style={styles.modalScore}>
-              {t('orixasOffering.game.finalScore')}: {score}
+              {t('orixasOffering.battle.totalDamage')}: {totalDamage}
             </Text>
             <TouchableOpacity style={styles.modalButton} onPress={resetGame}>
               <Text style={styles.modalButtonText}>{t('orixasOffering.game.playAgain')}</Text>
@@ -320,92 +580,204 @@ export const OrixasOfferingGameScreen: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#1a0533' },
-  containerCorrect: { backgroundColor: '#1a3320' },
-  containerWrong: { backgroundColor: '#3a0a0a' },
+
+  flashOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#fff',
+    zIndex: 10,
+  },
+
+  // Header
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(245,200,66,0.15)',
   },
-  backText: { fontSize: 16, color: '#f5c842', fontWeight: '600' },
-  scoreText: { fontSize: 22, fontWeight: '800', color: '#f5c842' },
-  timerText: { fontSize: 18, fontWeight: '700', color: '#d4a8f0' },
-  livesRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 12,
-    paddingBottom: 4,
-  },
-  livesText: { fontSize: 22 },
-  streakText: { fontSize: 18, fontWeight: '800', color: '#f5c842' },
-  gameArea: {
+  backText: { fontSize: 15, color: '#f5c842', fontWeight: '600' },
+  headerTitle: { fontSize: 13, fontWeight: '700', color: '#d4a8f0' },
+  headerDmg: { fontSize: 14, fontWeight: '700', color: '#f5c842' },
+
+  // Battle arena
+  battleArena: { flex: 1, paddingHorizontal: 12, paddingVertical: 4 },
+
+  enemyRow: {
     flex: 1,
-    position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  playerRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  // Sprites — enemy (top-right, smaller)
+  enemySpriteBox: {
+    borderRadius: 16,
+    borderWidth: 2,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    alignItems: 'center',
+    minWidth: 86,
+  },
+  enemySpriteTop: { fontSize: 13, textAlign: 'center' },
+  enemySpriteBody: { fontSize: 34, textAlign: 'center' },
+  enemySpriteBottom: { fontSize: 13, textAlign: 'center' },
+
+  // Sprites — player (bottom-left, larger)
+  playerSpriteBox: {
+    borderRadius: 16,
+    borderWidth: 2,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    alignItems: 'center',
+    minWidth: 110,
+  },
+  playerSpriteTop: { fontSize: 16, textAlign: 'center' },
+  playerSpriteBody: { fontSize: 50, textAlign: 'center' },
+  playerSpriteBottom: { fontSize: 16, textAlign: 'center' },
+
+  // HP bars
+  hpBarWrapper: {
+    flex: 1,
+    marginHorizontal: 8,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 12,
+    padding: 10,
+  },
+  hpCharName: { fontSize: 13, fontWeight: '800', color: '#fff', marginBottom: 6 },
+  hpBarRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  hpLabel: { fontSize: 10, fontWeight: '700', color: '#d4a8f0', width: 18 },
+  hpBarBg: {
+    flex: 1,
+    height: 10,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 5,
     overflow: 'hidden',
   },
-  offeringContainer: {
-    position: 'absolute',
-    left: SW / 2 - 36,
-    top: 0,
-    width: 72,
-    height: 72,
+  hpBarFill: { height: '100%', borderRadius: 5 },
+  hpNumbers: { fontSize: 11, color: '#d4a8f0', marginTop: 4 },
+
+  // Battle log
+  battleLogBox: {
+    marginHorizontal: 12,
+    marginBottom: 8,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(245,200,66,0.2)',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    minHeight: 54,
     justifyContent: 'center',
-    alignItems: 'center',
   },
-  offeringEmoji: { fontSize: 56, textAlign: 'center' },
-  shrinesRow: {
+  battleLogText: { fontSize: 13, color: '#fff', lineHeight: 18, textAlign: 'center' },
+
+  // Moves
+  movesArea: { paddingHorizontal: 12, paddingBottom: 12 },
+  movesGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  moveBtn: {
+    width: (SW - 32) / 2,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    borderWidth: 2,
+    borderRadius: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 12,
-    paddingBottom: 20,
-    paddingTop: 8,
+    alignItems: 'center',
     gap: 8,
   },
-  shrine: {
-    flex: 1,
-    borderRadius: 18,
-    paddingVertical: 14,
+  moveEmoji: { fontSize: 22 },
+  moveName: { flex: 1, fontSize: 11, fontWeight: '600', color: '#fff', lineHeight: 14 },
+  moveDmg: { fontSize: 12, fontWeight: '800', color: '#f5c842', minWidth: 24, textAlign: 'right' },
+
+  waitingBox: {
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    borderRadius: 14,
+    paddingVertical: 18,
     alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.35,
-    shadowRadius: 6,
-    elevation: 4,
   },
-  shrineEmoji: { fontSize: 30, marginBottom: 4 },
-  shrineName: { fontSize: 12, fontWeight: '700', color: '#fff', textAlign: 'center' },
+  waitingText: { fontSize: 15, color: '#d4a8f0', fontWeight: '600' },
+
+  // Character select
+  selectBackBtn: { paddingHorizontal: 16, paddingTop: 12 },
+  selectTitle: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#f5c842',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  selectSubtitle: {
+    fontSize: 14,
+    color: '#d4a8f0',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  selectGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 12,
+    paddingHorizontal: 12,
+    paddingBottom: 20,
+  },
+  selectCard: {
+    width: (SW - 48) / 2,
+    borderWidth: 2,
+    borderRadius: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+  },
+  selectSpriteTop: { fontSize: 15, textAlign: 'center', marginBottom: 2 },
+  selectSpriteBody: { fontSize: 44, textAlign: 'center', marginBottom: 4 },
+  selectName: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 2,
+  },
+  selectHp: { fontSize: 12, color: '#d4a8f0' },
+
+  // Modal
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.75)',
+    backgroundColor: 'rgba(0,0,0,0.82)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
     backgroundColor: '#2a0a44',
     borderRadius: 24,
-    padding: 32,
+    padding: 28,
     alignItems: 'center',
-    width: '80%',
+    width: '82%',
     borderWidth: 1,
     borderColor: 'rgba(245,200,66,0.3)',
   },
-  modalEmoji: { fontSize: 64, marginBottom: 12 },
-  modalTitle: { fontSize: 28, fontWeight: '800', color: '#f5c842', marginBottom: 8 },
-  modalScore: { fontSize: 20, color: '#fff', fontWeight: '700', marginBottom: 24 },
+  modalEmoji: { fontSize: 56, marginBottom: 8 },
+  modalTitle: { fontSize: 30, fontWeight: '800', marginBottom: 6 },
+  modalSubtitle: { fontSize: 13, color: '#d4a8f0', textAlign: 'center', marginBottom: 8 },
+  modalScore: { fontSize: 18, color: '#fff', fontWeight: '700', marginBottom: 20 },
   modalButton: {
     backgroundColor: '#f5c842',
     paddingVertical: 14,
     paddingHorizontal: 40,
     borderRadius: 24,
-    marginBottom: 12,
+    marginBottom: 10,
     width: '100%',
     alignItems: 'center',
   },
-  modalButtonText: { fontSize: 18, fontWeight: '700', color: '#1a0533' },
-  modalSecondaryButton: { paddingVertical: 10 },
-  modalSecondaryText: { fontSize: 16, color: '#9b6fc4' },
+  modalButtonText: { fontSize: 17, fontWeight: '700', color: '#1a0533' },
+  modalSecondaryButton: { paddingVertical: 8 },
+  modalSecondaryText: { fontSize: 15, color: '#9b6fc4' },
 });
