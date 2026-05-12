@@ -977,11 +977,28 @@
   },
   "orixasOffering": {
     "home": {
-      "title": "Oferenda dos Orixás",
-      "subtitle": "Leve as oferendas sagradas ao Orixá certo!",
+      "title": "Batalha dos Orixás",
+      "subtitle": "Escolha seu Orixá e batalhe contra um oponente divino!",
       "play": "Jogar",
-      "instructions": "Toque no Orixá certo antes da oferenda chegar ao fundo. Mantenha a sequência para ganhar mais pontos!",
+      "instructions": "Escolha seu guerreiro Orixá e derrote seu oponente com 4 poderes únicos. Cada Orixá tem golpes especiais!",
       "bestScore": "Melhor Pontuação"
+    },
+    "select": {
+      "title": "Escolha seu Orixá",
+      "subtitle": "Quem vai lutar por você?",
+      "hp": "HP"
+    },
+    "battle": {
+      "title": "Batalha",
+      "start": "Um {{name}} selvagem apareceu! Escolha seu poder!",
+      "attack": "{{name}} usou {{move}}! {{damage}} de dano!",
+      "attackHeal": "{{name}} usou {{move}}! {{damage}} de dano! Recuperou {{heal}} HP!",
+      "enemyTurn": "{{name}} está atacando…",
+      "victory": "Vitória!",
+      "defeat": "Derrota…",
+      "victoryMsg": "{{winner}} derrotou {{loser}}!",
+      "defeatMsg": "{{winner}} derrotou {{loser}}…",
+      "totalDamage": "Dano Total"
     },
     "game": {
       "streak": "Sequência",

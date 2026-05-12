@@ -19,7 +19,7 @@ export const OrixasOfferingHomeScreen: React.FC<Props> = ({ navigation }) => {
         <Text style={styles.backText}>← {t('common.back')}</Text>
       </TouchableOpacity>
       <View style={styles.content}>
-        <EmojiIcon emoji="✨" size={72} style={styles.emoji} />
+        <EmojiIcon emoji="⚔️" size={72} style={styles.emoji} />
         <Text style={styles.title}>{t('orixasOffering.home.title')}</Text>
         <Text style={styles.subtitle}>{t('orixasOffering.home.subtitle')}</Text>
         {bestScore > 0 && (
