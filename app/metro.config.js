@@ -3,6 +3,7 @@ const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const config = getSentryExpoConfig(__dirname);
 
 config.resolver.sourceExts = [...config.resolver.sourceExts, 'tsx', 'ts'];
+config.resolver.assetExts.push('gltf', 'glb', 'png', 'jpg', 'webp');
 
 config.resolver.resolveRequest = (context, moduleName, platform) => {
   const originalResolveRequest = context.resolveRequest;
