@@ -1,0 +1,9 @@
+Starting project at /app/app
+Expo Autolinking module resolution enabled
+Starting Metro Bundler
+
+Waiting on http://localhost:19006
+Logs for your project will appear below.
+Web node_modules/.pnpm/expo-router@55.0.6_e02b958819c9d177aef4e6f170c611cd/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 2794ms node_modules/.pnpm/expo-router@55.0.6_e02b958819c9d177aef4e6f170c611cd/node_modules/expo-router/entry.js (2131 modules)
+ LOG  [web] Logs will appear in the browser console

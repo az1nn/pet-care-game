@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { usePet } from '../context/PetContext';
+import { useTheme } from '../context/ThemeContext';
 import { useBuddy } from '../context/BuddyContext';
 import { useToast } from '../context/ToastContext';
 import { PetRenderer } from '../components/PetRenderer';
@@ -27,6 +28,7 @@ type Props = {
 
 export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { pet, earnMoney } = usePet();
+  const { colors, themeType } = useTheme();
   const { sendEvent } = useBuddy();
   const { showToast } = useToast();
   const { t } = useTranslation();
@@ -86,7 +88,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Unified Status Card with Pet Name, Age, Money and Status Bars */}
       <StatusCard pet={pet} petName={petNameDisplay} petAge={petAgeDisplay} />
       {hasWarnings && (
@@ -108,7 +110,15 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
         <BuddyWidget onProfilePress={() => setShowBuddyProfile(true)} />
       </View>
 
-      <View style={[styles.actionsContainer, dynamicStyles.actionsContainer]}>
+      <View style={[
+        styles.actionsContainer,
+        dynamicStyles.actionsContainer,
+        {
+          backgroundColor: themeType === 'new' ? 'transparent' : '#fff',
+          shadowOpacity: themeType === 'new' ? 0 : 0.1,
+          elevation: themeType === 'new' ? 0 : 5,
+        }
+      ]}>
         <IconButton
           emoji="🍖"
           label={t('home.actions.feed')}
@@ -116,6 +126,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
             sendEvent('pet_fed');
             navigation.navigate('Feed');
           }}
+          style={themeType === 'new' ? { backgroundColor: colors.actionButtons.feed } : undefined}
         />
         <IconButton
           emoji="🛁"
@@ -124,6 +135,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
             sendEvent('pet_bathed');
             navigation.navigate('Bath');
           }}
+          style={themeType === 'new' ? { backgroundColor: colors.actionButtons.bath } : undefined}
         />
         <IconButton
           emoji="💤"
@@ -134,16 +146,19 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
           }}
           disabled={!canSleep}
           disabledReason={t('sleep.notTired', { name: pet.name })}
+          style={themeType === 'new' ? { backgroundColor: colors.actionButtons.sleep } : undefined}
         />
         <IconButton
           emoji={vetStatus === 'urgent' ? '🚨' : '🏥'}
           label={vetStatus === 'urgent' ? t('home.actions.vet') : t('home.actions.veterinarian')}
           onPress={() => navigation.navigate('Vet')}
+          style={themeType === 'new' ? { backgroundColor: colors.actionButtons.vet } : undefined}
         />
         <IconButton
           emoji="👕"
           label={t('home.actions.clothes')}
           onPress={() => navigation.navigate('Wardrobe')}
+          style={themeType === 'new' ? { backgroundColor: colors.actionButtons.clothes } : undefined}
         />
         <IconButton
           emoji="🎮"
@@ -152,8 +167,14 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
             sendEvent('pet_played');
             navigation.navigate('Play');
           }}
+          style={themeType === 'new' ? { backgroundColor: colors.actionButtons.play } : undefined}
         />
-        <IconButton emoji="🏠" label={t('home.actions.menu')} onPress={handleMenuPress} />
+        <IconButton
+          emoji="🏠"
+          label={t('home.actions.menu')}
+          onPress={handleMenuPress}
+          style={themeType === 'new' ? { backgroundColor: colors.actionButtons.menu } : undefined}
+        />
       </View>
 
       <ConfirmModal

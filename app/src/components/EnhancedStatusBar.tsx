@@ -38,6 +38,7 @@ export const EnhancedStatusBar: React.FC<EnhancedStatusBarProps> = ({
             color={hungerLevel.color}
             emoji="🍖"
             showPercentage={showPercentage}
+            type="hunger"
           />
           <StatusBar
             label={t('status.hygiene')}
@@ -45,6 +46,7 @@ export const EnhancedStatusBar: React.FC<EnhancedStatusBarProps> = ({
             color={hygieneLevel.color}
             emoji="🛁"
             showPercentage={showPercentage}
+            type="hygiene"
           />
           <StatusBar
             label={t('status.energy')}
@@ -52,6 +54,7 @@ export const EnhancedStatusBar: React.FC<EnhancedStatusBarProps> = ({
             color={energyLevel.color}
             emoji="⚡"
             showPercentage={showPercentage}
+            type="energy"
           />
         </View>
         <View style={styles.column}>
@@ -61,6 +64,7 @@ export const EnhancedStatusBar: React.FC<EnhancedStatusBarProps> = ({
             color={happinessLevel.color}
             emoji={happinessEmoji}
             showPercentage={showPercentage}
+            type="happiness"
           />
           <StatusBar
             label={t('status.health')}
@@ -68,6 +72,7 @@ export const EnhancedStatusBar: React.FC<EnhancedStatusBarProps> = ({
             color={healthLevel.color}
             emoji="❤️"
             showPercentage={showPercentage}
+            type="health"
           />
         </View>
       </View>
@@ -82,6 +87,7 @@ export const EnhancedStatusBar: React.FC<EnhancedStatusBarProps> = ({
         color={hungerLevel.color}
         emoji="🍖"
         showPercentage={showPercentage}
+        type="hunger"
       />
       <StatusBar
         label={t('status.hygiene')}
@@ -89,6 +95,7 @@ export const EnhancedStatusBar: React.FC<EnhancedStatusBarProps> = ({
         color={hygieneLevel.color}
         emoji="🛁"
         showPercentage={showPercentage}
+        type="hygiene"
       />
       <StatusBar
         label={t('status.energy')}
@@ -96,6 +103,7 @@ export const EnhancedStatusBar: React.FC<EnhancedStatusBarProps> = ({
         color={energyLevel.color}
         emoji="⚡"
         showPercentage={showPercentage}
+        type="energy"
       />
       <StatusBar
         label={t('status.happiness')}
@@ -103,6 +111,7 @@ export const EnhancedStatusBar: React.FC<EnhancedStatusBarProps> = ({
         color={happinessLevel.color}
         emoji={happinessEmoji}
         showPercentage={showPercentage}
+        type="happiness"
       />
       <StatusBar
         label={t('status.health')}
@@ -110,6 +119,7 @@ export const EnhancedStatusBar: React.FC<EnhancedStatusBarProps> = ({
         color={healthLevel.color}
         emoji="❤️"
         showPercentage={showPercentage}
+        type="health"
       />
     </View>
   );

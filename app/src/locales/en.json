@@ -5,7 +5,11 @@
     "interface": "Interface",
     "selectLanguage": "Select Language",
     "selectInterface": "Select Interface",
-    "interfaceHint": "Choose how games are displayed"
+    "interfaceHint": "Choose how games are displayed",
+    "theme": "Theme",
+    "selectTheme": "Select Theme",
+    "oldTheme": "Classic Theme",
+    "newTheme": "Modern Theme"
   },
   "review": {
     "modalTitle": "Review {{name}}",
@@ -94,7 +98,8 @@
       "confirmText": "Sign Out",
       "cancelText": "Cancel"
     },
-    "help": "❓ Help & FAQ"
+    "help": "❓ Help & FAQ",
+    "switchTheme": "Switch Theme"
   },
   "createPet": {
     "title": "🐾 Create New Pet",
