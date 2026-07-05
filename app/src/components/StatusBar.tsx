@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useResponsive } from '../hooks/useResponsive';
 import { STATUS_BAR_SIZE } from '../config/responsive';
+import { useTheme } from '../context/ThemeContext';
 
 type StatusBarProps = {
   label: string;
@@ -9,6 +10,7 @@ type StatusBarProps = {
   color: string;
   emoji: string;
   showPercentage?: boolean;
+  type?: 'hunger' | 'hygiene' | 'energy' | 'happiness' | 'health';
 };
 
 export const StatusBar: React.FC<StatusBarProps> = ({
@@ -17,8 +19,10 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   color,
   emoji,
   showPercentage = true,
+  type,
 }) => {
   const { deviceType, spacing } = useResponsive();
+  const { colors, themeType } = useTheme();
   const sizes = STATUS_BAR_SIZE[deviceType];
 
   const dynamicStyles = {
@@ -58,12 +62,21 @@ export const StatusBar: React.FC<StatusBarProps> = ({
     >
       <Text style={[styles.emoji, dynamicStyles.emoji]}>{emoji}</Text>
       <View style={styles.barContainer}>
-        <View style={[styles.barBackground, dynamicStyles.barBackground]}>
+        <View style={[styles.barBackground, dynamicStyles.barBackground, themeType === 'new' && { backgroundColor: colors.stats.background }]}>
           <View
             style={[
               styles.barFill,
               dynamicStyles.barFill,
-              { width: `${value}%`, backgroundColor: color },
+              {
+                width: `${value}%`,
+                backgroundColor: themeType === 'new' ? (
+                  type === 'hunger' ? colors.stats.hunger :
+                  type === 'hygiene' ? colors.stats.hygiene :
+                  type === 'energy' ? colors.stats.energy :
+                  type === 'happiness' ? colors.stats.happiness :
+                  colors.stats.health
+                ) : color
+              },
             ]}
           />
         </View>

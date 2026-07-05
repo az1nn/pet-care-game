@@ -5,7 +5,11 @@
     "interface": "Interface",
     "selectLanguage": "Selecionar Idioma",
     "selectInterface": "Selecionar Interface",
-    "interfaceHint": "Escolha como os jogos são exibidos"
+    "interfaceHint": "Escolha como os jogos são exibidos",
+    "theme": "Tema",
+    "selectTheme": "Selecionar Tema",
+    "oldTheme": "Tema Clássico",
+    "newTheme": "Tema Moderno"
   },
   "review": {
     "modalTitle": "Avaliar {{name}}",
@@ -94,7 +98,8 @@
       "confirmText": "Sair",
       "cancelText": "Cancelar"
     },
-    "help": "❓ Ajuda & FAQ"
+    "help": "❓ Ajuda e FAQ",
+    "switchTheme": "Trocar Tema"
   },
   "createPet": {
     "title": "🐾 Criar Novo Pet",

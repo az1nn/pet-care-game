@@ -4,6 +4,7 @@ import { hapticFeedback } from '../utils/haptics';
 import { useResponsive } from '../hooks/useResponsive';
 import { ICON_BUTTON_SIZE } from '../config/responsive';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../context/ThemeContext';
 import { audioService } from '../services/AudioService';
 
 type IconButtonProps = {
@@ -20,6 +21,7 @@ export const IconButton: React.FC<IconButtonProps> = React.memo(
   ({ emoji, label, onPress, style, disabled = false, disabledReason, soundEnabled = true }) => {
     const { deviceType, spacing } = useResponsive();
     const { showToast } = useToast();
+    const { themeType } = useTheme();
     const sizes = ICON_BUTTON_SIZE[deviceType];
 
     const handlePress = () => {
@@ -41,7 +43,8 @@ export const IconButton: React.FC<IconButtonProps> = React.memo(
       button: {
         minWidth: sizes.width,
         padding: sizes.padding,
-        borderRadius: spacing(12),
+        borderRadius: themeType === 'new' ? sizes.width / 2 : spacing(12),
+        height: themeType === 'new' ? sizes.width : 'auto',
       },
       emoji: {
         fontSize: sizes.emoji,
@@ -67,8 +70,8 @@ export const IconButton: React.FC<IconButtonProps> = React.memo(
         accessibilityState={{ disabled }}
         accessibilityHint={disabledReason}
       >
-        <Text style={[styles.emoji, dynamicStyles.emoji]}>{emoji}</Text>
-        <Text style={[styles.label, dynamicStyles.label]}>{label}</Text>
+        <Text style={[styles.emoji, dynamicStyles.emoji, themeType === 'new' && { marginBottom: 0 }]}>{emoji}</Text>
+        {themeType !== 'new' && <Text style={[styles.label, dynamicStyles.label]}>{label}</Text>}
       </TouchableOpacity>
     );
   }

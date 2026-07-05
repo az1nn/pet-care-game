@@ -251,6 +251,41 @@ jest.mock('./src/context/AdContext', () => ({
   }),
 }));
 
+jest.mock('./src/context/ThemeContext', () => ({
+  ThemeProvider: ({ children }) => children,
+  useTheme: () => ({
+    themeType: 'old',
+    colors: {
+      primary: '#9b59b6',
+      background: '#e8f5e9',
+      cardBackground: 'transparent',
+      text: '#333',
+      textSecondary: '#666',
+      actionButtons: {
+        feed: '#9b59b6',
+        bath: '#9b59b6',
+        sleep: '#9b59b6',
+        vet: '#9b59b6',
+        clothes: '#9b59b6',
+        play: '#9b59b6',
+        menu: '#9b59b6',
+      },
+      stats: {
+        background: '#e0e0e0',
+        hunger: '#4CAF50',
+        hygiene: '#4CAF50',
+        energy: '#4CAF50',
+        happiness: '#4CAF50',
+        health: '#4CAF50',
+      },
+      moneyBackground: '#FFD700',
+      moneyText: '#333',
+    },
+    setTheme: jest.fn(),
+    isLoading: false,
+  }),
+}));
+
 // Mock @expo/vector-icons
 jest.mock('@expo/vector-icons', () => {
   const React = require('react');

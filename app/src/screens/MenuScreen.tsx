@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image, Alert } 
 import { useTranslation } from 'react-i18next';
 import { usePet } from '../context/PetContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { ScreenNavigationProp } from '../types/navigation';
@@ -14,6 +15,7 @@ type Props = {
 export const MenuScreen: React.FC<Props> = ({ navigation }) => {
   const { pet, removePet } = usePet();
   const { user, isGuest, signOut } = useAuth();
+  const { themeType, setTheme, colors } = useTheme();
   const { t } = useTranslation();
   const [showNewPetConfirm, setShowNewPetConfirm] = useState(false);
   const [showDeletePetConfirm, setShowDeletePetConfirm] = useState(false);
@@ -52,6 +54,11 @@ export const MenuScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleHelp = () => {
     navigation.navigate('Help');
+  };
+
+  const handleThemeToggle = async () => {
+    const nextTheme = themeType === 'old' ? 'new' : 'old';
+    await setTheme(nextTheme);
   };
 
   const handleSignOut = () => {
@@ -156,6 +163,17 @@ export const MenuScreen: React.FC<Props> = ({ navigation }) => {
             accessibilityLabel={t('menu.help')}
           >
             <Text style={styles.helpButtonText}>{t('menu.help')}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.themeButton}
+            onPress={handleThemeToggle}
+            accessibilityRole="button"
+            accessibilityLabel={t('menu.switchTheme')}
+          >
+            <Text style={[styles.themeButtonText, { color: colors.primary }]}>
+              {t('menu.switchTheme')}: {themeType === 'old' ? t('settings.oldTheme') : t('settings.newTheme')}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -342,6 +360,17 @@ const styles = StyleSheet.create({
   },
   helpButtonText: {
     color: '#9b59b6',
+    fontSize: 15,
+    fontWeight: '500',
+    textDecorationLine: 'underline',
+  },
+  themeButton: {
+    backgroundColor: 'transparent',
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  themeButtonText: {
     fontSize: 15,
     fontWeight: '500',
     textDecorationLine: 'underline',
