@@ -2,6 +2,9 @@
   "name": "lillys-box",
   "version": "1.0.0",
   "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": "20.x"
+  },
   "description": "Jogo 2D infantil para Android usando React Native - cuidar de animais domésticos",
   "main": "expo-router/entry",
   "scripts": {
