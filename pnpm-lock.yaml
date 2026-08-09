@@ -84,8 +84,8 @@ importers:
         specifier: ~55.0.8
         version: 55.0.8(expo@55.0.8)
       expo-image-picker:
-        specifier: ~55.0.11
-        version: 55.0.12(expo@55.0.8)
+        specifier: ~55.0.13
+        version: 55.0.13(expo@55.0.8)
       expo-linear-gradient:
         specifier: ~55.0.9
         version: 55.0.9(expo@55.0.8)(react-native@0.77.3(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(@types/react@18.2.79)(react@19.2.4))(react@19.2.4)
@@ -4331,8 +4331,8 @@ packages:
     peerDependencies:
       expo: '*'
 
-  expo-image-picker@55.0.12:
-    resolution: {integrity: sha512-ky8nzXTd5eLUDct5daAHng0xrWYRJyXfLCRmEdE9v/IUywYCnFU7aCnQ7PTQJvzGSzhePJJmP/POvTkVP//+qQ==}
+  expo-image-picker@55.0.13:
+    resolution: {integrity: sha512-G+W11rcoUi3rK+6cnKWkTfZilMkGVZnYe90TiM3R98nPSlzGBoto3a/TkGGTJXedz/dmMzr49L+STlWhuKKIFw==}
     peerDependencies:
       expo: '*'
 
@@ -6156,6 +6156,10 @@ packages:
 
   picomatch@4.0.3:
     resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
+    engines: {node: '>=12'}
+
+  picomatch@4.0.4:
+    resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
   pify@4.0.1:
@@ -12693,7 +12697,7 @@ snapshots:
     dependencies:
       expo: 55.0.8(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@55.0.6)(react-dom@19.2.4(react@19.2.4))(react-native-webview@13.16.1(react-native@0.77.3(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(@types/react@18.2.79)(react@19.2.4))(react@19.2.4))(react-native@0.77.3(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(@types/react@18.2.79)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
 
-  expo-image-picker@55.0.12(expo@55.0.8):
+  expo-image-picker@55.0.13(expo@55.0.8):
     dependencies:
       expo: 55.0.8(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@55.0.6)(react-dom@19.2.4(react@19.2.4))(react-native-webview@13.16.1(react-native@0.77.3(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(@types/react@18.2.79)(react@19.2.4))(react@19.2.4))(react-native@0.77.3(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(@types/react@18.2.79)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
       expo-image-loader: 55.0.0(expo@55.0.8)
@@ -15172,6 +15176,8 @@ snapshots:
 
   picomatch@4.0.3: {}
 
+  picomatch@4.0.4: {}
+
   pify@4.0.1: {}
 
   pino-abstract-transport@3.0.0:
@@ -16590,7 +16596,7 @@ snapshots:
     dependencies:
       '@oxc-project/runtime': 0.115.0
       lightningcss: 1.32.0
-      picomatch: 4.0.3
+      picomatch: 4.0.4
       postcss: 8.5.8
       rolldown: 1.0.0-rc.9
       tinyglobby: 0.2.15
